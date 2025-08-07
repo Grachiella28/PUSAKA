@@ -1,0 +1,29 @@
+/* Reset dasar */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: white;
+  color: black;
+  width: 100%;
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  padding: 1rem;
+  margin: auto;
+}
+
+/* Responsive padding */
+@media (max-width: 768px) {
+  .container {
+    padding: 0.75rem;
+  }
+}

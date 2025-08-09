@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
-import { useNavigate } from "react-router-dom"; // ⬅️ Tambahkan ini
+import { useNavigate } from "react-router-dom";
+import "../styles/home.css"; // pastikan import css ini
 
-const NaskahList = () => {
+const Home = () => {
   const [naskahList, setNaskahList] = useState([]);
-  const navigate = useNavigate(); // ⬅️ Inisialisasi navigasi
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -21,31 +22,43 @@ const NaskahList = () => {
   }, []);
 
   const handleOpenFlipbook = (id) => {
-    navigate(`/baca/${id}`); // ⬅️ Navigasi ke halaman flipbook
+    navigate(`/baca/${id}`);
   };
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">📜 Daftar Naskah</h2>
+    <div>
+      <h2>📜 Daftar Naskah</h2>
       {naskahList.length === 0 ? (
         <p>Belum ada data naskah.</p>
       ) : (
-        <ul className="space-y-4">
+        <div className="naskah-list">
           {naskahList.map((item) => (
-            <li
-              key={item.id}
-              className="border p-4 rounded-md shadow hover:shadow-md transition cursor-pointer"
-              onClick={() => handleOpenFlipbook(item.id)} // ⬅️ Pasang handler klik
-            >
-              <h3 className="text-xl font-semibold">{item.judul}</h3>
-              <p className="text-gray-600 mb-2">{item.deskripsi}</p>
-              <p className="text-blue-600 underline">📖 Buka dalam Flipbook</p>
-            </li>
+            <div key={item.id} className="naskah-card">
+              {/* Thumbnail */}
+              {item.thumbnail && (
+                <img
+                  src={item.thumbnail}
+                  alt={item.judul}
+                  className="thumbnail"
+                />
+              )}
+
+              {/* Judul */}
+              <div className="judul">{item.judul}</div>
+
+              {/* Tombol Read */}
+              <button
+                className="read-button"
+                onClick={() => handleOpenFlipbook(item.id)}
+              >
+                Read
+              </button>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );
 };
 
-export default NaskahList;
+export default Home;

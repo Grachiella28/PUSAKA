@@ -21,12 +21,11 @@ const Upload = () => {
     setSuccessMsg("");
 
     try {
-      // 1. Upload ke Cloudinary (konversi jadi gambar per halaman PDF)
+      // Upload PDF ke Cloudinary
       const formData = new FormData();
       formData.append("file", file);
       formData.append("upload_preset", "pusaka");
 
-      // Gunakan resource_type raw jika PDF, atau auto jika preset sudah support
       const response = await fetch(
         "https://api.cloudinary.com/v1_1/dn1oejv6r/auto/upload",
         {
@@ -38,26 +37,29 @@ const Upload = () => {
       const data = await response.json();
       console.log("Cloudinary response:", data);
 
-      // Ambil info halaman dari secure_url jika file PDF dikonversi jadi image per halaman
-      const publicId = data.public_id; // tanpa ekstensi
+      // Ambil data halaman
+      const publicId = data.public_id;
       const totalPages = data.pages || 1;
 
-      // Buat array url gambar per halaman (jpg)
+      // URL base Cloudinary untuk gambar
       const baseUrl = `https://res.cloudinary.com/dn1oejv6r/image/upload`;
       const imageUrls = [];
 
       for (let i = 1; i <= totalPages; i++) {
-        const pageUrl = `${baseUrl}/pg_${i}/${publicId}.jpg`;
-        imageUrls.push(pageUrl);
+        imageUrls.push(`${baseUrl}/pg_${i}/${publicId}.jpg`);
       }
 
-      // 2. Simpan metadata ke Firestore
+      // Ambil thumbnail (halaman pertama)
+      const thumbnailUrl = imageUrls[0];
+
+      // Simpan metadata ke Firestore
       await addDoc(collection(db, "naskah"), {
         judul,
         deskripsi,
         totalHalaman: totalPages,
         url_pdf: data.secure_url,
         halaman: imageUrls,
+        thumbnail: thumbnailUrl,
         uploadedAt: new Date(),
       });
 

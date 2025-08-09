@@ -1,13 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import NaskahList from "./pages/Home";
+import Home from "./pages/Home";
 import Upload from "./pages/Upload";
-import BacaNaskah from './pages/BacaNaskah';
+import BacaNaskah from './pages/Flipbook';
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<NaskahList />} />
+        <Route path="/" element={<Home />} />
         <Route path="/upload" element={<Upload />} />
         <Route path="/baca/:id" element={<BacaNaskah />} />
       </Routes>

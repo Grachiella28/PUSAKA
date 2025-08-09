@@ -3,9 +3,9 @@ import { useParams } from "react-router-dom";
 import { db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import HTMLFlipBook from "react-pageflip";
-import "../styles/BacaNaskah.css";
+import "../styles/Flipbook.css";
 
-const BacaNaskah = () => {
+const Flipbook = () => {
   const { id } = useParams();
   const [naskah, setNaskah] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -58,4 +58,4 @@ const BacaNaskah = () => {
   );
 };
 
-export default BacaNaskah;
+export default Flipbook;

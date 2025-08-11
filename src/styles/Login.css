@@ -1,0 +1,63 @@
+
+.login-card {
+  background: white;
+  padding: 40px 30px 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  width: 320px;
+  text-align: center;
+}
+
+/* Logo di atas */
+.login-logo {
+  width: 230px;
+  margin-bottom: 20px; 
+  object-fit: contain;
+}
+
+
+/* Form input */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Input email dan password */
+.login-input {
+  padding: 12px 15px;
+  border: 1.8px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.login-input:focus {
+  outline: none;
+  border-color: #341601;
+  box-shadow: 0 0 5px #341601aa;
+}
+
+/* Error text */
+.error-text {
+  color: #d93025;
+  font-size: 14px;
+  margin-top: -10px;
+}
+
+/* Tombol login */
+.login-button {
+  padding: 12px 0;
+  background-color: #341601;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.login-button:hover {
+  background-color: #5c2b00;
+}

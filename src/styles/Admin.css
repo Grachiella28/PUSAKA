@@ -1,0 +1,163 @@
+/* ===== LAYOUT UTAMA ===== */
+.admin-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #FFF8E1; 
+  font-family: 'Poppins', sans-serif;
+}
+
+/* ===== SIDEBAR ===== */
+.admin-sidebar {
+  background: #341601; 
+  color: whitesmoke; 
+  width: 220px;
+  padding: 20px 16px;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.15);
+}
+
+/* Judul Sidebar */
+.sidebar-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 700;
+  font-style: italic; 
+  color: #d4af37; 
+  background: linear-gradient(45deg, #b8860b, #ffd700);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 3px;
+  text-align: center;
+  text-transform: uppercase;
+  margin-bottom: 40px;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+  border-bottom: 2px solid rgba(212, 175, 55, 0.5);
+  padding-bottom: 14px;
+}
+
+/* ===== MENU LIST ===== */
+.admin-sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.admin-sidebar li {
+  padding: 10px 14px;
+  margin-bottom: 4px;
+  border-radius: 2px;
+  font-size: 15px;
+  font-weight: 400;
+  color: #efede7; 
+  cursor: pointer;
+  transition: all 0.25s ease;
+  user-select: none;
+}
+
+/* Hover efek */
+.admin-sidebar li:hover {
+  background-color: rgba(255, 193, 7, 0.2);
+  border-left: 4px solid #4b2e19;
+  color: #4b2e19;
+  transform: translateX(4px);
+}
+
+/* Efek klik */
+.admin-sidebar li:active {
+   background: rgba(224, 168, 0, 0.25);
+  transform: scale(0.98);
+  box-shadow: 0 0 8px rgba(255, 193, 7, 0.4); 
+}
+
+/* Menu aktif */
+.admin-sidebar .active {
+  background: transparent;
+  color: #4b2e19;
+  font-weight: 600;
+  border-left: 4px solid transparent;
+}
+
+/* ===== AREA UTAMA ===== */
+.admin-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== HEADER ===== */
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #341601; 
+  padding: 15px 25px;
+  color: #d4af37; 
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.admin-header p {
+  margin: 0;
+  font-weight: 500;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Tombol Lihat Website */
+.admin-header .view-site {
+  color: #341601;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.admin-header .view-site:hover {
+  background-color: rgba(255, 193, 7, 0.25);
+  color: #341601;
+}
+
+/* Logout icon */
+.logout-logo {
+  width: 120px;
+  height: 82px;
+  cursor: pointer;
+  border-radius: 70%;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.logout-logo:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 10px rgba(255, 193, 7, 0.6);
+}
+
+/* ===== KONTEN ===== */
+.admin-content {
+  background: #e5e2e2; 
+  padding: 150px 400px;
+}
+
+.admin-content h1 {
+  font-size: 26px;
+  font-weight: 00;
+  color: #341601;
+  margin-bottom: 10px;
+}
+
+.admin-content p {
+  font-size: 15px;
+  color: #444;
+  line-height: 1.6;
+}
+
+.halo-admin {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  font-weight: bold;
+  color: #341601; 
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+}

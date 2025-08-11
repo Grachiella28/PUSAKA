@@ -1,20 +1,39 @@
-.baca-container {
+/* Latar belakang seluruh halaman */
+.flipbook-wrapper {
+  width: 100vw;
+  height: 100vh;
+  background-color: #e5dcc4; /* warna latar belakang */
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  padding: 20px;
+  overflow: hidden;
 }
 
-.baca-container h2 {
-  margin-bottom: 10px;
-}
-
+/* Flipbook container */
 .flipbook {
-  margin-top: 20px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
 }
 
-.page img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+/* Halaman flipbook */
+.flipbook-page {
+  background: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0.05) 0%,
+      transparent 48%,
+      transparent 52%,
+      rgba(0, 0, 0, 0.05) 100%
+    ),
+    #f5e6c8;
+  border: 1px solid #d1bfa7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Gambar di dalam halaman */
+.flipbook-page img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
 }

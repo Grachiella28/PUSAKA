@@ -1,30 +1,34 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import "../styles/navbar.css";
 import logo from "../assets/Logo.png";
-import "../styles/Navbar.css";
 
-const Navbar = () => {
+const Navbar = React.forwardRef((props, ref) => {
   return (
-    <nav className="navbar">
+    <nav className="navbar" ref={ref}>
       <div className="navbar-container">
         <div className="navbar-logo">
-          <img className="logo-img" src={logo} alt="Logo PUSAKA" />
+          <img src={logo} alt="Logo" className="logo-img" />
           <span className="logo-text">PUSAKA</span>
         </div>
         <ul className="navbar-menu">
           <li>
-            <Link to="/login">Login</Link>
+            <NavLink to="/about">
+              About
+            </NavLink>
           </li>
           <li>
-            <Link to="/about">About</Link>
+            <NavLink to="/contact">
+              Contact
+            </NavLink>
           </li>
           <li>
-            <Link to="/contact">Contact</Link>
+            <NavLink to="/login">Admin</NavLink>
           </li>
         </ul>
       </div>
     </nav>
   );
-};
+});
 
 export default Navbar;

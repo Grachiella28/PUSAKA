@@ -1,18 +1,25 @@
 /* ===== Navbar ===== */
 .navbar {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 1000;
   background-color: #341601;
   color: white;
   padding: 12px 0;
+  width: 100vw;
+  margin: 0;
+  box-sizing: border-box;
 }
 
-/* Center content */
+/* Full width container - Override any parent constraints */
 .navbar-container {
-  max-width: 1200px; /* ✅ Sama dengan page home */
-  margin: 0 auto;
-  padding: 0 20px;
+  width: 100vw;
+  max-width: none !important; /* Force remove any max-width */
+  margin: 0 !important;
+  padding: 0 40px;
+  box-sizing: border-box;
 
   display: flex;
   justify-content: space-between;
@@ -53,26 +60,89 @@
   color: white;
   text-decoration: none;
   font-weight: 600;
+  font-size: 16px;
+  transition: color 0.3s ease;
 }
 
 .navbar-menu li a:hover {
   color: #ffc107;
 }
 
-/* Responsive */
+/* Tablet responsive */
+@media (max-width: 1024px) {
+  .navbar-container {
+    padding: 0 30px;
+  }
+  
+  .navbar-menu {
+    gap: 25px;
+  }
+  
+  .logo-text {
+    font-size: 26px;
+  }
+}
+
+/* Mobile responsive */
 @media (max-width: 768px) {
   .navbar-container {
+    padding: 0 20px;
     flex-direction: column;
-    gap: 10px;
+    gap: 15px;
   }
 
   .navbar-menu {
     flex-wrap: wrap;
     justify-content: center;
+    gap: 20px;
+  }
+
+  .logo-text {
+    font-size: 24px;
+  }
+  
+  .logo-img {
+    width: 50px;
+  }
+  
+  .navbar-menu li a {
+    font-size: 15px;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .navbar-container {
+    padding: 0 15px;
+    gap: 12px;
+  }
+
+  .navbar-menu {
     gap: 15px;
   }
 
   .logo-text {
     font-size: 22px;
+    letter-spacing: 1px;
   }
+  
+  .logo-img {
+    width: 45px;
+  }
+  
+  .navbar-menu li a {
+    font-size: 14px;
+  }
+}
+
+/* Efek link aktif */
+.navbar-menu li a.active {
+  color: #ffc107; /* Warna highlight */
+  border-bottom: 2px solid #ffc107; /* Garis bawah */
+  padding-bottom: 2px;
+}
+
+/* Animasi halus saat berubah */
+.navbar-menu li a {
+  transition: color 0.3s ease, border-bottom 0.3s ease;
 }

@@ -4,6 +4,8 @@ import Upload from "./pages/Upload";
 import BacaNaskah from './pages/Flipbook';
 import Login from "./pages/Login";   
 import Admin from "./pages/Admin";   
+import About from './pages/About';
+import Contact from './pages/Contact';
 
 
 function App() {
@@ -15,6 +17,8 @@ function App() {
         <Route path="/baca/:id" element={<BacaNaskah />} />
         <Route path="/login" element={<Login />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/about" element={<About />} />
+         <Route path="/contact" element={<Contact />} />
       </Routes>
     </Router>
   );

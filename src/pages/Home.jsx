@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar"; // ✅ import Navbar
 import "../styles/home.css";
-import logo from "../assets/Logo.png";
 
 const Home = () => {
   const [naskahList, setNaskahList] = useState([]);
@@ -38,24 +38,8 @@ const Home = () => {
 
   return (
     <div>
-      {/* Navbar */}
-      <nav className="navbar">
-        <div className="navbar-logo">
-          <img className="logo-img" src={logo} alt="Logo PUSAKA" />
-          <span className="logo-text">PUSAKA</span>
-        </div>
-        <ul className="navbar-menu">
-          <li>
-            <Link to="/login">Login</Link>
-          </li>
-          <li>
-            <Link to="/about">About</Link>
-          </li>
-          <li>
-            <Link to="/contact">Contact</Link>
-          </li>
-        </ul>
-      </nav>
+      {/* ✅ Panggil Navbar */}
+      <Navbar />
 
       {/* Loading & Error */}
       {loading && <p className="empty-message">Memuat data...</p>}

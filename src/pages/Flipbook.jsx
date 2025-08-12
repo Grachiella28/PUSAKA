@@ -29,10 +29,15 @@ const Flipbook = () => {
   useEffect(() => {
     const updateLayout = () => {
       const isLandscape = window.innerWidth > window.innerHeight;
-      setPagesPerView(isLandscape ? 2 : 1);
+      const isMobile = window.innerWidth <= 768;
+      
+      setPagesPerView(isMobile ? 1 : (isLandscape ? 2 : 1));
       setSize({
-        width: Math.min(window.innerWidth / (isLandscape ? 2 : 1) - 40, 800),
-        height: window.innerHeight - 40
+        width: Math.min(
+          window.innerWidth / (isMobile ? 1 : (isLandscape ? 2 : 1)) - 40, 
+          isMobile ? window.innerWidth - 40 : 800
+        ),
+        height: Math.min(window.innerHeight - 40, 800)
       });
     };
     updateLayout();
@@ -50,17 +55,46 @@ const Flipbook = () => {
         width={size.width}
         height={size.height}
         size="stretch"
+        minWidth={315}
+        maxWidth={1000}
+        minHeight={400}
+        maxHeight={1533}
         showCover={true}
         mobileScrollSupport={true}
         className="flipbook"
         maxShadowOpacity={0.5}
-        useMouseEvents={true} // biar bisa klik/drag
-        swipeDistance={30}    // jarak minimal swipe
+        useMouseEvents={true}
+        swipeDistance={30}
         clickEventForward={true}
+        // Konfigurasi tambahan untuk menghilangkan gap
+        flippingTime={600}
+        usePortrait={pagesPerView === 1}
+        autoSize={true}
+        drawShadow={true}
+        // Penting: set startZIndex
+        startZIndex={0}
       >
         {naskah.halaman.map((url, index) => (
-          <div key={index} className="flipbook-page">
-            <img src={url} alt={`Halaman ${index + 1}`} />
+          <div 
+            key={index} 
+            className="flipbook-page"
+            data-density="hard" // untuk efek flip yang lebih realistis
+          >
+            <img 
+              src={url} 
+              alt={`Halaman ${index + 1}`}
+              loading="lazy"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                display: 'block',
+                margin: 0,
+                padding: 0,
+                border: 'none'
+              }}
+              onDragStart={(e) => e.preventDefault()} // prevent drag
+            />
           </div>
         ))}
       </HTMLFlipBook>

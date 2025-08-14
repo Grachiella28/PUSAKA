@@ -1,15 +1,22 @@
 import React from "react";
 import "../styles/Admin.css";
-import logoutLogo from "../assets/Logo.png"; // ambil dari src/assets
+import logoutLogo from "../assets/Logo.png"; 
+import { auth } from "../firebase"; // import firebase config
+import { signOut } from "firebase/auth"; // import fungsi sign out
 
 export default function Admin() {
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    window.location.href = "/login";
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      localStorage.removeItem("isLoggedIn"); // hapus status login lokal
+      window.location.href = "/login"; // arahkan ke halaman login
+    } catch (error) {
+      console.error("Gagal logout:", error);
+    }
   };
 
   const goToWebsite = () => {
-    window.location.href = "/"; // langsung buka halaman utama
+    window.location.href = "/";
   };
 
   return (
@@ -21,7 +28,7 @@ export default function Admin() {
           <li>Admin</li>
           <li>Upload Naskah</li>
           <li>Delete Naskah</li>
-          <li onClick={handleLogout} style={{ cursor: "pointer" }}>
+          <li onClick={handleLogout} style={{ cursor: "pointer", color: "red" }}>
             Logout
           </li>
         </ul>
@@ -33,7 +40,6 @@ export default function Admin() {
         <header className="admin-header">
           <span>Halo, Admin</span>
           <div className="header-actions">
-            {/* Logo jadi tombol ke website */}
             <img
               src={logoutLogo}
               alt="Logo"

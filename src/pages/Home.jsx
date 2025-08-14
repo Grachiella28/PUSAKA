@@ -41,7 +41,6 @@ const Home = () => {
             {/* ✅ Panggil Navbar */}
             <Navbar />
 
-            <Navbar />
             <div className="home-container">
                 {/* Loading & Error */}
                 {loading && <p className="empty-message">Memuat data...</p>}

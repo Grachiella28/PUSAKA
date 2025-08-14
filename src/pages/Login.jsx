@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Login.css";
+import Navbar from "../components/Navbar";
 import Logo from "../assets/logo.png";
+import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebase";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -9,28 +12,40 @@ const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  // 🔹 Cek kalau sudah login, langsung ke /admin
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        navigate("/admin", { replace: true });
+      }
+    });
+    return () => unsubscribe();
+  }, [navigate]);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
 
     try {
-      if (email === "admin@example.com" && password === "123456") {
-        localStorage.setItem("isLoggedIn", "true");
-        navigate("/admin");
-      } else {
-        setError("Email atau password salah!");
-      }
+      await signInWithEmailAndPassword(auth, email, password);
+      localStorage.setItem("isLoggedIn", "true");
+      navigate("/admin", { replace: true }); // 🔹 Hapus login dari history
     } catch (err) {
       console.error(err);
-      setError("Terjadi kesalahan saat login.");
+      if (err.code === "auth/user-not-found") {
+        setError("Email tidak terdaftar!");
+      } else if (err.code === "auth/wrong-password") {
+        setError("Kata sandi salah!");
+      }
+      // 🔹 Tidak menampilkan pesan error umum
     }
   };
 
   return (
     <div className="login-container">
+       <Navbar />
       <div className="login-card">
         <img src={Logo} alt="Logo" className="login-logo" />
-        {/* Judul "Login" dihilangkan */}
         <form onSubmit={handleLogin} className="login-form">
           <input
             type="email"

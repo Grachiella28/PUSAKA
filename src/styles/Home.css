@@ -1,81 +1,586 @@
+/* ===== CONTAINER UTAMA ===== */
 .home-container {
-  padding-top: 100px; /* ✅ Sesuaikan tinggi navbar */
+  padding-top: 100px;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #FFF8E1 0%, #F5F5DC 100%);
 }
 
-
-/* ===== Judul halaman ===== */
-.page-title {
+/* ===== HERO SECTION ===== */
+.hero-section {
+  background: linear-gradient(135deg, #341601 0%, #4a1f01 100%);
+  color: white;
+  padding: 60px 40px;
   text-align: center;
-  margin: 90px 0 40px 0;
-  font-size: 28px;
+  margin-bottom: 40px;
+}
+
+.hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-title {
+  font-size: 48px;
   font-weight: 700;
-  color: #341601;
-  font-family: 'Poppins', sans-serif;
+  margin-bottom: 20px;
+  font-family: 'Playfair Display', serif;
+  background: linear-gradient(45deg, #d4af37, #ffd700);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* ===== Pesan kosong dan loading ===== */
-.empty-message {
-  text-align: center;
-  font-style: italic;
-  color: #666;
+.hero-subtitle {
+  font-size: 18px;
+  margin-bottom: 40px;
+  color: #f0f0f0;
+  line-height: 1.6;
+}
+
+.hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
   margin-top: 40px;
 }
 
-/* ===== Daftar Naskah ===== */
-.naskah-list {
-  display: flex;
-  flex-direction: row; /* ✅ Susun mendatar */
-  flex-wrap: wrap; /* ✅ Supaya turun ke bawah jika tidak muat */
-  gap: 25px;
-  padding: 0 40px 60px 40px;
-  justify-content: center; /* ✅ Rata tengah */
-}
-
-
-.naskah-card {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  text-align: center;
-  padding: 15px;
+.stat-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: transform 0.3s ease;
+}
+
+.stat-number {
+  font-size: 36px;
+  font-weight: 700;
+  color: #d4af37;
+  display: block;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: #f0f0f0;
+  margin-top: 5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ===== SEARCH SECTION ===== */
+.search-section {
+  padding: 0 40px 30px 40px;
+}
+
+.search-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-input {
+  width: 100%;
+  padding: 15px 50px 15px 20px;
+  border: 2px solid #e0e0e0;
+  border-radius: 25px;
+  font-size: 16px;
+  background: white;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #d4af37;
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.2);
+}
+
+.search-icon {
+  position: absolute;
+  right: 20px;
+  font-size: 18px;
+  color: #666;
+  pointer-events: none;
+}
+
+/* ===== TAB NAVIGATION ===== */
+.tab-navigation {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 40px 30px 40px;
+  flex-wrap: wrap;
+}
+
+.tab-btn {
+  padding: 12px 25px;
+  border: 2px solid #d4af37;
+  background: white;
+  color: #341601;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.tab-btn:hover {
+  background: #d4af37;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+.tab-btn.active {
+  background: linear-gradient(135deg, #341601, #4a1f01);
+  color: white;
+  border-color: #341601;
+  box-shadow: 0 4px 15px rgba(52, 22, 1, 0.3);
+}
+
+/* ===== KATEGORI FILTER ===== */
+.kategori-filter {
+  padding: 0 40px 30px 40px;
+}
+
+.kategori-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.kategori-btn {
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  background: white;
+  color: #333;
+  border-radius: 15px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.kategori-btn:hover {
+  border-color: #d4af37;
+  background: #fafafa;
+  transform: translateY(-1px);
+}
+
+.kategori-btn.active {
+  background: #d4af37;
+  color: white;
+  border-color: #d4af37;
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+}
+
+.kategori-count {
+  font-size: 11px;
+  opacity: 0.8;
+  font-weight: 600;
+}
+
+/* ===== CONTENT SECTION ===== */
+.content-section {
+  padding: 0 40px 60px 40px;
+}
+
+.search-results-info {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 15px;
+  background: rgba(212, 175, 55, 0.1);
+  border-radius: 10px;
+  color: #341601;
+  font-weight: 500;
+}
+
+.section-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #341601;
+  text-align: center;
+  margin-bottom: 40px;
+  font-family: 'Playfair Display', serif;
+}
+
+/* ===== LOADING & ERROR ===== */
+.loading-message {
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 18px;
+  color: #666;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.error-message {
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 18px;
+  color: #e74c3c;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(231, 76, 60, 0.1);
+  border: 2px solid #ffebee;
+}
+
+/* ===== EMPTY STATE ===== */
+.empty-state {
+  text-align: center;
+  padding: 80px 20px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.empty-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+  opacity: 0.5;
+}
+
+.empty-state h3 {
+  font-size: 24px;
+  color: #341601;
+  margin-bottom: 15px;
+}
+
+.empty-state p {
+  color: #666;
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.clear-search-btn {
+  background: #d4af37;
+  color: white;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.clear-search-btn:hover {
+  background: #b8860b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+/* ===== NASKAH GRID ===== */
+.naskah-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ===== NASKAH CARD ===== */
+.naskah-card {
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border: 1px solid #f0f0f0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .naskah-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+  border-color: #d4af37;
 }
 
-.thumbnail {
+/* ===== RECOMMENDATION BADGE ===== */
+.recommendation-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 5;
+  font-size: 24px;
+  background: white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== THUMBNAIL ===== */
+.card-thumbnail-wrapper {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+  background: #f8f8f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-thumbnail {
   width: 100%;
-  height: 195px;
+  height: 100%;
   object-fit: cover;
-  border-radius: 4px;
+  transition: transform 0.3s ease;
 }
 
-.judul {
-  font-weight: 700;
-  margin: 15px 0;
-  font-size: 20px;
-  color: #341601;
+.naskah-card:hover .card-thumbnail {
+  transform: scale(1.05);
 }
 
-/* Tombol "Read" */
-.read-button {
-  background-color: #341601;
+.thumbnail-placeholder {
+  font-size: 48px;
+  color: #ddd;
+}
+
+/* ===== CARD CONTENT ===== */
+.card-content {
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-kategori {
+  background: linear-gradient(135deg, #d4af37, #b8860b);
   color: white;
-  padding: 10px 0;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  width: 100%;
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-size: 12px;
   font-weight: 600;
-  transition: background-color 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  align-self: flex-start;
+  margin-bottom: 15px;
+}
+
+.card-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #341601;
+  margin-bottom: 12px;
+  line-height: 1.3;
+  font-family: 'Playfair Display', serif;
+}
+
+.card-description {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 15px;
+  flex: 1;
+}
+
+.card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 15px;
+}
+
+.card-pages, .card-date {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ===== READ BUTTON ===== */
+.read-button {
+  background: linear-gradient(135deg, #341601, #4a1f01);
+  color: white;
+  padding: 15px 20px;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: auto;
 }
 
 .read-button:hover {
-  background-color: #5a2c0a;
+  background: linear-gradient(135deg, #4a1f01, #5d2602);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(52, 22, 1, 0.3);
 }
 
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 1024px) {
+  .hero-title {
+    font-size: 40px;
+  }
+  
+  .hero-stats {
+    gap: 40px;
+  }
+  
+  .naskah-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-container {
+    padding-top: 80px;
+  }
+  
+  .hero-section {
+    padding: 40px 20px;
+  }
+  
+  .hero-title {
+    font-size: 32px;
+  }
+  
+  .hero-subtitle {
+    font-size: 16px;
+  }
+  
+  .hero-stats {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .search-section,
+  .tab-navigation,
+  .kategori-filter,
+  .content-section {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  
+  .search-input {
+    padding: 12px 45px 12px 15px;
+    font-size: 14px;
+  }
+  
+  .tab-navigation {
+    gap: 8px;
+  }
+  
+  .tab-btn {
+    padding: 10px 20px;
+    font-size: 13px;
+  }
+  
+  .naskah-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+  }
+  
+  .section-title {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 28px;
+  }
+  
+  .hero-section {
+    padding: 30px 15px;
+  }
+  
+  .search-section,
+  .tab-navigation,
+  .kategori-filter,
+  .content-section {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  
+  .tab-navigation {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .tab-btn {
+    min-width: 200px;
+    justify-content: center;
+  }
+  
+  .naskah-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .card-content {
+    padding: 15px;
+  }
+  
+  .card-title {
+    font-size: 18px;
+  }
+  
+  .kategori-buttons {
+    justify-content: center;
+  }
+  
+  .kategori-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.naskah-card {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* ===== SCROLLBAR STYLING ===== */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d4af37;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #b8860b;
+}

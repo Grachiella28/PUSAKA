@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/Admin.css";
 import logoutLogo from "../assets/Logo.png"; 
 import { auth, db } from "../firebase"; // import firebase config
 import { signOut } from "firebase/auth"; // import fungsi sign out
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc } from "firebase/firestore";
 
 export default function Admin() {
   // State untuk menu aktif
@@ -16,6 +16,37 @@ export default function Admin() {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
+
+  // State untuk list naskah
+  const [naskahList, setNaskahList] = useState([]);
+  const [loadingList, setLoadingList] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [editForm, setEditForm] = useState({});
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
+
+  // Fetch naskah list
+  const fetchNaskahList = async () => {
+    try {
+      setLoadingList(true);
+      const querySnapshot = await getDocs(collection(db, "naskah"));
+      const data = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setNaskahList(data);
+    } catch (error) {
+      console.error("Error fetching naskah:", error);
+    } finally {
+      setLoadingList(false);
+    }
+  };
+
+  // Load naskah list saat component mount atau saat menu berubah ke list
+  useEffect(() => {
+    if (activeMenu === "list") {
+      fetchNaskahList();
+    }
+  }, [activeMenu]);
 
   const handleLogout = async () => {
     try {
@@ -98,6 +129,48 @@ export default function Admin() {
     setLoading(false);
   };
 
+  // Handle edit naskah
+  const handleEdit = (naskah) => {
+    setEditingId(naskah.id);
+    setEditForm({
+      judul: naskah.judul,
+      deskripsi: naskah.deskripsi,
+      kategori: naskah.kategori
+    });
+  };
+
+  // Handle update naskah
+  const handleUpdate = async (id) => {
+    try {
+      await updateDoc(doc(db, "naskah", id), {
+        judul: editForm.judul,
+        deskripsi: editForm.deskripsi,
+        kategori: editForm.kategori,
+        updatedAt: new Date()
+      });
+      setEditingId(null);
+      setEditForm({});
+      fetchNaskahList(); // Refresh list
+      alert("✅ Naskah berhasil diperbarui!");
+    } catch (error) {
+      console.error("Error updating naskah:", error);
+      alert("❌ Gagal memperbarui naskah.");
+    }
+  };
+
+  // Handle delete naskah
+  const handleDelete = async (id) => {
+    try {
+      await deleteDoc(doc(db, "naskah", id));
+      setDeleteConfirm(null);
+      fetchNaskahList(); // Refresh list
+      alert("✅ Naskah berhasil dihapus!");
+    } catch (error) {
+      console.error("Error deleting naskah:", error);
+      alert("❌ Gagal menghapus naskah.");
+    }
+  };
+
   const renderContent = () => {
     switch (activeMenu) {
       case "upload":
@@ -169,11 +242,192 @@ export default function Admin() {
           </div>
         );
       
-      case "delete":
+      case "list":
         return (
-          <div className="delete-section">
-            <h2>🗑️ Hapus Naskah</h2>
-            <p>Fitur hapus naskah sedang dalam pengembangan.</p>
+          <div className="list-section">
+            <h2>📋 List Naskah</h2>
+            {loadingList ? (
+              <div className="loading-message">Memuat data naskah...</div>
+            ) : (
+              <>
+                <div className="naskah-count">
+                  Total Naskah: <span className="count-number">{naskahList.length}</span>
+                </div>
+                {naskahList.length === 0 ? (
+                  <div className="empty-list">
+                    <p>Belum ada naskah yang diunggah.</p>
+                    <button 
+                      className="upload-redirect-btn"
+                      onClick={() => setActiveMenu("upload")}
+                    >
+                      Upload Naskah Pertama
+                    </button>
+                  </div>
+                ) : (
+                  <div className="naskah-table-container">
+                    <table className="naskah-table">
+                      <thead>
+                        <tr>
+                          <th>Thumbnail</th>
+                          <th>Judul</th>
+                          <th>Kategori</th>
+                          <th>Deskripsi</th>
+                          <th>Halaman</th>
+                          <th>Upload Date</th>
+                          <th>Aksi</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {naskahList.map((naskah) => (
+                          <tr key={naskah.id}>
+                            <td>
+                              {naskah.thumbnail && (
+                                <img
+                                  src={naskah.thumbnail}
+                                  alt={naskah.judul}
+                                  className="table-thumbnail"
+                                />
+                              )}
+                            </td>
+                            <td>
+                              {editingId === naskah.id ? (
+                                <input
+                                  type="text"
+                                  value={editForm.judul}
+                                  onChange={(e) => setEditForm({...editForm, judul: e.target.value})}
+                                  className="edit-input"
+                                />
+                              ) : (
+                                <div className="naskah-title">{naskah.judul}</div>
+                              )}
+                            </td>
+                            <td>
+                              {editingId === naskah.id ? (
+                                <select
+                                  value={editForm.kategori}
+                                  onChange={(e) => setEditForm({...editForm, kategori: e.target.value})}
+                                  className="edit-select"
+                                >
+                                  <option value="sejarah">Sejarah</option>
+                                  <option value="sastra">Sastra</option>
+                                  <option value="agama">Agama</option>
+                                  <option value="budaya">Budaya</option>
+                                  <option value="hukum">Hukum</option>
+                                  <option value="filsafat">Filsafat</option>
+                                  <option value="bahasa">Bahasa</option>
+                                  <option value="lainnya">Lainnya</option>
+                                </select>
+                              ) : (
+                                <span className="kategori-badge">{naskah.kategori}</span>
+                              )}
+                            </td>
+                            <td>
+                              {editingId === naskah.id ? (
+                                <textarea
+                                  value={editForm.deskripsi}
+                                  onChange={(e) => setEditForm({...editForm, deskripsi: e.target.value})}
+                                  className="edit-textarea"
+                                  rows="2"
+                                />
+                              ) : (
+                                <div className="naskah-description">
+                                  {naskah.deskripsi ? 
+                                    (naskah.deskripsi.length > 50 ? 
+                                      naskah.deskripsi.substring(0, 50) + "..." : 
+                                      naskah.deskripsi
+                                    ) : 
+                                    "Tidak ada deskripsi"
+                                  }
+                                </div>
+                              )}
+                            </td>
+                            <td className="text-center">{naskah.totalHalaman || 0}</td>
+                            <td>
+                              {naskah.uploadedAt ? 
+                                new Date(naskah.uploadedAt.seconds * 1000).toLocaleDateString("id-ID") : 
+                                "Tidak diketahui"
+                              }
+                            </td>
+                            <td>
+                              <div className="action-buttons">
+                                {editingId === naskah.id ? (
+                                  <>
+                                    <button
+                                      className="save-btn"
+                                      onClick={() => handleUpdate(naskah.id)}
+                                    >
+                                      ✅ Simpan
+                                    </button>
+                                    <button
+                                      className="cancel-btn"
+                                      onClick={() => {
+                                        setEditingId(null);
+                                        setEditForm({});
+                                      }}
+                                    >
+                                      ❌ Batal
+                                    </button>
+                                  </>
+                                ) : (
+                                  <>
+                                    <button
+                                      className="view-btn"
+                                      onClick={() => window.open(`/baca/${naskah.id}`, '_blank')}
+                                      title="Lihat Naskah"
+                                    >
+                                      Lihat
+                                    </button>
+                                    <button
+                                      className="edit-btn"
+                                      onClick={() => handleEdit(naskah)}
+                                      title="Edit Naskah"
+                                    >
+                                      Edit
+                                    </button>
+                                    <button
+                                      className="delete-btn"
+                                      onClick={() => setDeleteConfirm(naskah.id)}
+                                      title="Hapus Naskah"
+                                    >
+                                      Hapus
+                                    </button>
+                                  </>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* Delete Confirmation Modal */}
+            {deleteConfirm && (
+              <div className="modal-overlay">
+                <div className="modal-content">
+                  <h3>⚠️ Konfirmasi Hapus</h3>
+                  <p>Apakah Anda yakin ingin menghapus naskah ini?</p>
+                  <p><strong>Tindakan ini tidak dapat dibatalkan!</strong></p>
+                  <div className="modal-actions">
+                    <button
+                      className="confirm-delete-btn"
+                      onClick={() => handleDelete(deleteConfirm)}
+                    >
+                      Ya, Hapus
+                    </button>
+                    <button
+                      className="cancel-delete-btn"
+                      onClick={() => setDeleteConfirm(null)}
+                    >
+                      Batal
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         );
       
@@ -184,12 +438,12 @@ export default function Admin() {
             <p>
               Gunakan menu di samping untuk mengelola konten naskah Anda.
               <br />
-              Mulai dengan memilih menu <strong>Upload Naskah</strong> di sebelah kiri.
+              Mulai dengan memilih menu <strong>Upload Naskah</strong> atau <strong>List Naskah</strong> di sebelah kiri.
             </p>
             <div className="stats-cards">
               <div className="stat-card">
                 <h3>Total Naskah</h3>
-                <p className="stat-number">-</p>
+                <p className="stat-number">{naskahList.length}</p>
               </div>
               <div className="stat-card">
                 <h3>Upload Hari Ini</h3>
@@ -224,10 +478,10 @@ export default function Admin() {
             Upload Naskah
           </li>
           <li 
-            className={activeMenu === "delete" ? "active" : ""}
-            onClick={() => setActiveMenu("delete")}
+            className={activeMenu === "list" ? "active" : ""}
+            onClick={() => setActiveMenu("list")}
           >
-            Hapus Naskah
+            List Naskah
           </li>
           <li onClick={handleLogout} style={{ cursor: "pointer", color: "red" }}>
             Logout

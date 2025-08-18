@@ -1,71 +1,501 @@
-/* Flipbook.css - Fullscreen tanpa potong gambar */
+/* Flipbook.css - Enhanced Responsive Design */
+
+* {
+  box-sizing: border-box;
+}
+
+.flipbook-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
 
 .flipbook-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100vw;
-  height: 100vh;
-  background-color: #000; /* Latar belakang hitam */
-  overflow: hidden;
-  margin: 0;
-  padding: 0;
+  width: 100%;
+  height: 100%;
+  padding: 5px;
+  transition: transform 0.3s ease;
+  cursor: grab;
+  overflow: hidden; /* Prevent scrollbars from appearing */
 }
 
+.flipbook-wrapper:active {
+  cursor: grabbing;
+}
+
+/* Flipbook styling */
 .flipbook {
-  width: 100% !important;
-  height: 100% !important;
-  box-shadow: none !important;
+  box-shadow: 
+    0 15px 50px rgba(0, 0, 0, 0.3),
+    0 8px 20px rgba(0, 0, 0, 0.2) !important;
+  border-radius: 2px;
+  overflow: visible;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 .flipbook-page {
+  background: #000;
+  position: relative;
+  overflow: hidden;
   margin: 0 !important;
   padding: 0 !important;
   border: none !important;
+}
+
+.page-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: stretch;
+  align-items: stretch;
+  background: #000;
+  position: relative;
+}
+
+.page-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  display: block;
+  user-select: none;
+  pointer-events: none;
   background: #000;
 }
 
-.flipbook-page img {
+.error-placeholder {
   width: 100%;
   height: 100%;
-  object-fit: contain; /* Pastikan gambar tidak terpotong */
-  display: block;
-  background-color: #000;
-  margin: 0;
-  padding: 0;
-  border: none;
-  /* vertical-align: top; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #1a1a1a;
+  color: #ccc;
+  font-size: 14px;
 }
 
-/* Hilangkan gap default react-pageflip */
+/* Loading and Error States */
+.flipbook-loading,
+.flipbook-error {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  color: white;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Controls */
+.flipbook-controls {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 1000;
+  transition: opacity 0.3s ease;
+}
+
+.flipbook-controls.visible {
+  opacity: 1;
+}
+
+.flipbook-controls.hidden {
+  opacity: 0;
+}
+
+.flipbook-controls > * {
+  pointer-events: auto;
+}
+
+.controls-top {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.top-left-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.back-btn {
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+  user-select: none;
+}
+
+.naskah-head-title {
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  padding: 8px 16px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.controls-bottom {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+/* Page indicator */
+.page-indicator {
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 1001;
+  position: relative;
+}
+
+.current-page {
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+.separator {
+  margin: 0 5px;
+  opacity: 0.6;
+}
+
+/* Control buttons */
+.control-btn {
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+  user-select: none;
+}
+
+.control-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.control-btn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.control-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.nav-controls,
+.zoom-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-btn {
+  font-size: 24px;
+  width: 55px;
+  height: 55px;
+}
+
+.zoom-btn {
+  width: 45px;
+  height: 45px;
+  font-size: 16px;
+}
+
+.zoom-level {
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0 5px;
+  min-width: 45px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 5px 10px;
+  border-radius: 15px;
+  backdrop-filter: blur(5px);
+}
+
+.reset-btn {
+  width: 60px;
+  height: 40px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Help text */
+.help-text {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 15px;
+  font-size: 12px;
+  backdrop-filter: blur(5px);
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+/* Remove react-pageflip default margins and gaps completely */
 .stf__wrapper,
 .stf__item,
-.stf__block {
+.stf__block,
+.stf__outerShadow,
+.stf__innerShadow,
+.stf__parent {
   margin: 0 !important;
   padding: 0 !important;
-  border: none !important;
   box-sizing: border-box !important;
+  border: none !important;
 }
 
-.stf__wrapper.--left .stf__item,
-.stf__wrapper.--right .stf__item,
+.stf__wrapper {
+  background: transparent !important;
+  gap: 0 !important;
+}
+
+.stf__item {
+  background: black !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  border: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
 .stf__item.--turned {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+}
+
+.stf__item.--left,
+.stf__item.--right {
+  border: none !important;
+  margin: 0 !important;
+}
+
+/* Ensure no gaps in dual page mode */
+.stf__wrapper.--desktop .stf__item.--left {
+  margin-right: 0 !important;
+  border-right: none !important;
+}
+
+.stf__wrapper.--desktop .stf__item.--right {
+  margin-left: 0 !important;
+  border-left: none !important;
+}
+
+/* Remove any internal spacing */
+.stf__item > * {
   margin: 0 !important;
   padding: 0 !important;
 }
 
-.stf__item::before,
-.stf__item::after {
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-/* Responsive */
+/* Mobile optimizations */
 @media (max-width: 768px) {
   .flipbook-wrapper {
-    padding: 0;
+    padding: 2px;
   }
+  
+  .controls-top {
+    padding: 0 15px;
+  }
+  
+  .top-left-controls {
+    gap: 10px;
+  }
+  
+  .back-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+  
+  .naskah-title {
+    font-size: 14px;
+    max-width: 150px;
+    padding: 6px 12px;
+  }
+  
+  .page-indicator {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+  
+  .controls-bottom {
+    transform: translateX(-50%) scale(0.9);
+  }
+  
+  .control-btn {
+    width: 45px;
+    height: 45px;
+    font-size: 16px;
+  }
+  
+  .nav-btn {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+  }
+  
+  .zoom-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 14px;
+  }
+  
+  .nav-controls,
+  .zoom-controls {
+    gap: 8px;
+  }
+  
+  .help-text {
+    bottom: 100px;
+    font-size: 11px;
+    padding: 6px 12px;
+  }
+  
+  .page-jump {
+    right: 10px;
+    top: 70px;
+  }
+  
+  .page-input {
+    width: 50px;
+    font-size: 12px;
+    padding: 6px;
+  }
+
+  /* Mobile specific - remove shadows for better performance */
+  .flipbook {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+  }
+  
+  .stf__item {
+    box-shadow: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .controls-bottom {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .help-text {
+    display: none;
+  }
+  
+  .controls-bottom {
+    transform: translateX(-50%) scale(0.8);
+  }
+  
+  .naskah-title {
+    max-width: 120px;
+    font-size: 12px;
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .flipbook-wrapper {
+    padding: 15px;
+  }
+}
+
+/* High DPI screens */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   .flipbook-page img {
-    object-fit: contain;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .error-placeholder {
+    background: #2d2d2d;
+    color: #ccc;
+  }
+}
+
+/* Print support */
+@media print {
+  .flipbook-controls,
+  .help-text {
+    display: none !important;
+  }
+  
+  .flipbook-container {
+    background: white;
   }
 }

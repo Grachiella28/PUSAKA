@@ -13,6 +13,7 @@ const Home = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedKategori, setSelectedKategori] = useState("all");
     const [activeTab, setActiveTab] = useState("all"); // all, rekomendasi, kategori
+    const [menuOpen, setMenuOpen] = useState(false);
     const navigate = useNavigate();
 
     // Daftar kategori
@@ -92,6 +93,12 @@ const Home = () => {
         if (tab !== "kategori") {
             setSelectedKategori("all");
         }
+        setMenuOpen(false); // Close menu after selection
+    };
+
+    const handleKategoriChange = (kategori) => {
+        setSelectedKategori(kategori);
+        setMenuOpen(false); // Close menu after selection
     };
 
     const getKategoriCount = (kategori) => {
@@ -100,32 +107,35 @@ const Home = () => {
         ).length;
     };
 
+    const getCurrentDisplayTitle = () => {
+        if (activeTab === "all") return "📚 Semua Naskah";
+        if (activeTab === "rekomendasi") return "⭐ Naskah Rekomendasi";
+        if (activeTab === "kategori") {
+            const kategoriLabel = kategoris.find(k => k.value === selectedKategori)?.label || "Kategori";
+            return `🗂️ ${kategoriLabel}`;
+        }
+    };
+
+    // Close menu when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (menuOpen && !event.target.closest('.filter-menu-container')) {
+                setMenuOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [menuOpen]);
+
     return (
         <div>
             <Navbar />
             
             <div className="home-container">
-                {/* Hero Section */}
-                <div className="hero-section">
-                    <div className="hero-content">
-                        <h1 className="hero-title">Pusaka Digital</h1>
-                        <p className="hero-subtitle">
-                            Jelajahi khasanah naskah klasik Nusantara dalam era digital
-                        </p>
-                        <div className="hero-stats">
-                            <div className="stat-item">
-                                <span className="stat-number">{naskahList.length}</span>
-                                <span className="stat-label">Naskah</span>
-                            </div>
-                            <div className="stat-item">
-                                <span className="stat-number">{kategoris.length - 1}</span>
-                                <span className="stat-label">Kategori</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Search Section */}
+                {/* Search Section with Filter Menu */}
                 <div className="search-section">
                     <div className="search-container">
                         <div className="search-input-wrapper">
@@ -138,50 +148,63 @@ const Home = () => {
                             />
                             <div className="search-icon">🔍</div>
                         </div>
-                    </div>
-                </div>
-
-                {/* Tab Navigation */}
-                <div className="tab-navigation">
-                    <button
-                        className={`tab-btn ${activeTab === "all" ? "active" : ""}`}
-                        onClick={() => handleTabChange("all")}
-                    >
-                        📚 Semua Naskah
-                    </button>
-                    <button
-                        className={`tab-btn ${activeTab === "rekomendasi" ? "active" : ""}`}
-                        onClick={() => handleTabChange("rekomendasi")}
-                    >
-                        ⭐ Rekomendasi
-                    </button>
-                    <button
-                        className={`tab-btn ${activeTab === "kategori" ? "active" : ""}`}
-                        onClick={() => handleTabChange("kategori")}
-                    >
-                        🗂️ Kategori
-                    </button>
-                </div>
-
-                {/* Kategori Filter (show only when kategori tab is active) */}
-                {activeTab === "kategori" && (
-                    <div className="kategori-filter">
-                        <div className="kategori-buttons">
-                            {kategoris.map((kat) => (
-                                <button
-                                    key={kat.value}
-                                    className={`kategori-btn ${selectedKategori === kat.value ? "active" : ""}`}
-                                    onClick={() => setSelectedKategori(kat.value)}
-                                >
-                                    {kat.label}
-                                    {kat.value !== "all" && (
-                                        <span className="kategori-count">({getKategoriCount(kat.value)})</span>
-                                    )}
-                                </button>
-                            ))}
+                        
+                        {/* Filter Menu Button */}
+                        <div className="filter-menu-container">
+                            <button 
+                                className={`filter-menu-btn ${menuOpen ? 'active' : ''}`}
+                                onClick={() => setMenuOpen(!menuOpen)}
+                            >
+                                <div className="hamburger">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                            </button>
+                            
+                            {/* Dropdown Menu */}
+                            {menuOpen && (
+                                <div className="filter-dropdown">
+                                    <div className="dropdown-section">
+                                        <h4 className="dropdown-title">Tampilan</h4>
+                                        <button
+                                            className={`dropdown-item ${activeTab === "all" ? "active" : ""}`}
+                                            onClick={() => handleTabChange("all")}
+                                        >
+                                            📚 Semua Naskah
+                                        </button>
+                                        <button
+                                            className={`dropdown-item ${activeTab === "rekomendasi" ? "active" : ""}`}
+                                            onClick={() => handleTabChange("rekomendasi")}
+                                        >
+                                            ⭐ Rekomendasi
+                                        </button>
+                                    </div>
+                                    
+                                    {/* Kategori Section - Always show */}
+                                    <div className="dropdown-section">
+                                        <h4 className="dropdown-title">Kategori</h4>
+                                        {kategoris.map((kat) => (
+                                            <button
+                                                key={kat.value}
+                                                className={`dropdown-item ${activeTab === "kategori" && selectedKategori === kat.value ? "active" : ""}`}
+                                                onClick={() => {
+                                                    handleTabChange("kategori");
+                                                    handleKategoriChange(kat.value);
+                                                }}
+                                            >
+                                                {kat.label}
+                                                {kat.value !== "all" && (
+                                                    <span className="kategori-count">({getKategoriCount(kat.value)})</span>
+                                                )}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
-                )}
+                </div>
 
                 {/* Content Section */}
                 <div className="content-section">
@@ -199,11 +222,9 @@ const Home = () => {
                                 </div>
                             )}
 
-                            {/* Tab Title */}
+                            {/* Current View Title */}
                             <div className="section-title">
-                                {activeTab === "all" && "📚 Semua Naskah"}
-                                {activeTab === "rekomendasi" && "⭐ Naskah Rekomendasi"}
-                                {activeTab === "kategori" && `🗂️ ${kategoris.find(k => k.value === selectedKategori)?.label || "Kategori"}`}
+                                {getCurrentDisplayTitle()}
                             </div>
 
                             {/* Naskah Grid */}

@@ -307,6 +307,23 @@
   pointer-events: none;
 }
 
+/* Watermark Styles */
+.watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none; /* Agar tidak mengganggu interaksi */
+  z-index: 10;
+}
+
+.watermark-logo {
+  width: 120px; /* Sesuaikan ukuran logo */
+  height: auto;
+  opacity: 0.1; /* Transparansi watermark */
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.5)); /* Shadow untuk visibilitas */
+}
+
 /* Remove react-pageflip default margins and gaps completely */
 .stf__wrapper,
 .stf__item,

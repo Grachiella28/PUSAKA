@@ -4,6 +4,7 @@ import { db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import HTMLFlipBook from "react-pageflip";
 import "../styles/Flipbook.css";
+import logo from "../assets/perpus.png";
 
 const Flipbook = () => {
   const { id } = useParams();
@@ -253,6 +254,13 @@ const Flipbook = () => {
                   <p>Gagal memuat halaman {index + 1}</p>
                 </div>
               </div>
+              <div className="watermark">
+              <img 
+                src={logo}
+                alt="Watermark" 
+                className="watermark-logo"
+              />
+            </div>
             </div>
           ))}
         </HTMLFlipBook>

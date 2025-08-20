@@ -3,7 +3,7 @@ import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import "../styles/home.css";
+import "../styles/Home.css";
 
 const Home = () => {
     const [naskahList, setNaskahList] = useState([]);

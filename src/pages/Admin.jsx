@@ -15,7 +15,6 @@ export default function Admin() {
   const [kategori, setKategori] = useState("");
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [successMsg, setSuccessMsg] = useState("");
 
   // State untuk list naskah
   const [naskahList, setNaskahList] = useState([]);
@@ -23,6 +22,31 @@ export default function Admin() {
   const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState({});
   const [deleteConfirm, setDeleteConfirm] = useState(null);
+
+  // State untuk notifikasi tengah
+  const [notification, setNotification] = useState({
+    show: false,
+    type: '', // 'success', 'error'
+    message: ''
+  });
+
+  // Function untuk menampilkan notifikasi
+  const showNotification = (type, message) => {
+    setNotification({
+      show: true,
+      type,
+      message
+    });
+    
+    // Auto hide setelah 3 detik
+    setTimeout(() => {
+      setNotification({
+        show: false,
+        type: '',
+        message: ''
+      });
+    }, 3000);
+  };
 
   // Fetch naskah list
   const fetchNaskahList = async () => {
@@ -65,12 +89,18 @@ export default function Admin() {
   const handleUpload = async (e) => {
     e.preventDefault();
     if (!judul || !file || !kategori) {
-      alert("Judul, kategori, dan file wajib diisi!");
+      showNotification('error', 'Judul, kategori, dan file wajib diisi!');
+      return;
+    }
+
+    // Validasi ukuran file (10MB = 10 * 1024 * 1024 bytes)
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+      showNotification('error', 'Ukuran file terlalu besar! Maksimal 10MB.');
       return;
     }
 
     setLoading(true);
-    setSuccessMsg("");
 
     try {
       // Upload PDF ke Cloudinary
@@ -116,14 +146,14 @@ export default function Admin() {
         uploadedAt: new Date(),
       });
 
-      setSuccessMsg("✅ Naskah berhasil diunggah!");
+      showNotification('success', '✅ Naskah berhasil diunggah!');
       setJudul("");
       setDeskripsi("");
       setKategori("");
       setFile(null);
     } catch (error) {
       console.error("Upload error:", error);
-      alert("Gagal mengunggah naskah.");
+      showNotification('error', '❌ Gagal mengunggah naskah!');
     }
 
     setLoading(false);
@@ -151,10 +181,10 @@ export default function Admin() {
       setEditingId(null);
       setEditForm({});
       fetchNaskahList(); // Refresh list
-      alert("✅ Naskah berhasil diperbarui!");
+      showNotification('success', '✅ Naskah berhasil diperbarui!');
     } catch (error) {
       console.error("Error updating naskah:", error);
-      alert("❌ Gagal memperbarui naskah.");
+      showNotification('error', '❌ Gagal memperbarui naskah!');
     }
   };
 
@@ -164,10 +194,10 @@ export default function Admin() {
       await deleteDoc(doc(db, "naskah", id));
       setDeleteConfirm(null);
       fetchNaskahList(); // Refresh list
-      alert("✅ Naskah berhasil dihapus!");
+      showNotification('success', '✅ Naskah berhasil dihapus!');
     } catch (error) {
       console.error("Error deleting naskah:", error);
-      alert("❌ Gagal menghapus naskah.");
+      showNotification('error', '❌ Gagal menghapus naskah!');
     }
   };
 
@@ -226,7 +256,7 @@ export default function Admin() {
                   onChange={(e) => setFile(e.target.files[0])}
                   required
                 />
-                <small>Format yang diterima: PDF (maksimal 50MB)</small>
+                <small>Format yang diterima: PDF (maksimal 10MB)</small>
               </div>
 
               <button 
@@ -236,8 +266,6 @@ export default function Admin() {
               >
                 {loading ? "Mengunggah..." : "Upload Naskah"}
               </button>
-
-              {successMsg && <div className="success-message">{successMsg}</div>}
             </form>
           </div>
         );
@@ -461,6 +489,15 @@ export default function Admin() {
 
   return (
     <div className="admin-container">
+      {/* Notifikasi Tengah */}
+      {notification.show && (
+        <div className="notification-overlay">
+          <div className={`notification-content ${notification.type}`}>
+            <p>{notification.message}</p>
+          </div>
+        </div>
+      )}
+
       {/* Sidebar */}
       <aside className="admin-sidebar">
         <div className="sidebar-title">Admin Pusaka</div>

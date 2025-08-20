@@ -15,6 +15,7 @@ export default function Admin() {
   const [kategori, setKategori] = useState("");
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   // State untuk list naskah
   const [naskahList, setNaskahList] = useState([]);
@@ -65,12 +66,16 @@ export default function Admin() {
     }
   };
 
-  // Load naskah list saat component mount atau saat menu berubah ke list
+  // Function untuk refresh data setelah upload berhasil
+  const refreshNaskahData = () => {
+    fetchNaskahList();
+  };
+
+  // Load naskah list saat component mount dan ketika menu berubah ke list
   useEffect(() => {
-    if (activeMenu === "list") {
-      fetchNaskahList();
-    }
-  }, [activeMenu]);
+    // Fetch data saat component pertama kali dimount untuk dashboard
+    fetchNaskahList();
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -101,12 +106,19 @@ export default function Admin() {
     }
 
     setLoading(true);
+    setUploadProgress(0);
 
     try {
+      // Update progress untuk start upload
+      setUploadProgress(10);
+
       // Upload PDF ke Cloudinary
       const formData = new FormData();
       formData.append("file", file);
       formData.append("upload_preset", "pusaka");
+
+      // Update progress untuk upload ke Cloudinary
+      setUploadProgress(30);
 
       const response = await fetch(
         "https://api.cloudinary.com/v1_1/dn1oejv6r/auto/upload",
@@ -116,12 +128,18 @@ export default function Admin() {
         }
       );
 
+      // Update progress setelah upload selesai
+      setUploadProgress(60);
+
       const data = await response.json();
       console.log("Cloudinary response:", data);
 
       // Ambil data halaman
       const publicId = data.public_id;
       const totalPages = data.pages || 1;
+
+      // Update progress untuk processing images
+      setUploadProgress(75);
 
       // URL base Cloudinary untuk gambar
       const baseUrl = `https://res.cloudinary.com/dn1oejv6r/image/upload`;
@@ -133,6 +151,9 @@ export default function Admin() {
 
       // Ambil thumbnail (halaman pertama)
       const thumbnailUrl = imageUrls[0];
+
+      // Update progress untuk saving ke database
+      setUploadProgress(90);
 
       // Simpan metadata ke Firestore
       await addDoc(collection(db, "naskah"), {
@@ -146,14 +167,26 @@ export default function Admin() {
         uploadedAt: new Date(),
       });
 
+      // Upload selesai 100%
+      setUploadProgress(100);
+
       showNotification('success', '✅ Naskah berhasil diunggah!');
-      setJudul("");
-      setDeskripsi("");
-      setKategori("");
-      setFile(null);
+      
+      // Refresh data naskah untuk update dashboard
+      refreshNaskahData();
+      
+      // Reset form dan progress
+      setTimeout(() => {
+        setJudul("");
+        setDeskripsi("");
+        setKategori("");
+        setFile(null);
+        setUploadProgress(0);
+      }, 1000);
     } catch (error) {
       console.error("Upload error:", error);
       showNotification('error', '❌ Gagal mengunggah naskah!');
+      setUploadProgress(0);
     }
 
     setLoading(false);
@@ -255,9 +288,25 @@ export default function Admin() {
                   accept="application/pdf"
                   onChange={(e) => setFile(e.target.files[0])}
                   required
+                  disabled={loading}
                 />
-                <small>Format yang diterima: PDF (maksimal 10MB)</small>
+                <small>1. Format yang diterima: PDF (maksimal 10MB)</small>
+                <small>2. Pastikan satu halaman file berisi satu halaman naskah</small>
               </div>
+
+              {loading && (
+                <div className="progress-container">
+                  <div className="progress-label">
+                    Mengunggah naskah... {uploadProgress}%
+                  </div>
+                  <div className="progress-bar">
+                    <div 
+                      className="progress-fill" 
+                      style={{ width: `${uploadProgress}%` }}
+                    ></div>
+                  </div>
+                </div>
+              )}
 
               <button 
                 type="submit" 
@@ -400,7 +449,7 @@ export default function Admin() {
                                   <>
                                     <button
                                       className="view-btn"
-                                      onClick={() => window.open(`/baca/${naskah.id}`, '_blank')}
+                                      onClick={() => window.location.href = `/baca/${naskah.id}`}
                                       title="Lihat Naskah"
                                     >
                                       Lihat

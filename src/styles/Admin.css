@@ -366,6 +366,57 @@ html, body {
   color: #888;
 }
 
+/* ===== PROGRESS BAR STYLES ===== */
+.progress-container {
+  margin: 20px 0;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  border: 1px solid #e0e0e0;
+}
+
+.progress-label {
+  font-size: 14px;
+  color: #341601;
+  margin-bottom: 8px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 20px;
+  background: #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #d4af37, #b8860b);
+  border-radius: 10px;
+  transition: width 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-fill::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  animation: progressShine 2s infinite;
+}
+
+@keyframes progressShine {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
 .upload-btn {
   background: linear-gradient(135deg, #341601, #4a1f01);
   color: white;
@@ -502,6 +553,7 @@ html, body {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
+  table-layout: fixed;
 }
 
 .naskah-table thead {
@@ -517,6 +569,15 @@ html, body {
   letter-spacing: 0.5px;
   border-bottom: 2px solid #d4af37;
 }
+
+/* Set specific column widths */
+.naskah-table th:nth-child(1) { width: 80px; }   /* Thumbnail */
+.naskah-table th:nth-child(2) { width: 180px; }  /* Judul */
+.naskah-table th:nth-child(3) { width: 120px; }  /* Kategori */
+.naskah-table th:nth-child(4) { width: 250px; }  /* Deskripsi */
+.naskah-table th:nth-child(5) { width: 70px; }   /* Halaman */
+.naskah-table th:nth-child(6) { width: 90px; }  /* Upload Date */
+.naskah-table th:nth-child(7) { width: 90px; }  /* Aksi */
 
 .naskah-table tbody tr {
   border-bottom: 1px solid #f0f0f0;
@@ -535,6 +596,8 @@ html, body {
   padding: 15px 12px;
   vertical-align: top;
   color: #333;
+  word-wrap: break-word;
+  max-width: 0;
 }
 
 .table-thumbnail {
@@ -569,6 +632,10 @@ html, body {
   line-height: 1.4;
   max-width: 250px;
   font-size: 13px;
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 
 .text-center {
@@ -861,6 +928,20 @@ html, body {
     margin: 20px;
     max-width: calc(100% - 40px);
   }
+
+  /* Mobile progress bar */
+  .progress-container {
+    margin: 15px 0;
+    padding: 12px;
+  }
+
+  .progress-label {
+    font-size: 13px;
+  }
+
+  .progress-bar {
+    height: 18px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -913,5 +994,18 @@ html, body {
 
   .notification-content p {
     font-size: 14px;
+  }
+
+  .progress-container {
+    margin: 10px 0;
+    padding: 10px;
+  }
+
+  .progress-label {
+    font-size: 12px;
+  }
+
+  .progress-bar {
+    height: 16px;
   }
 }

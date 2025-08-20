@@ -4,8 +4,6 @@ import Upload from "./pages/Upload";
 import BacaNaskah from './pages/Flipbook';
 import Login from "./pages/Login";
 import Admin from "./pages/Admin";
-import About from './pages/About';
-import Contact from './pages/Contact';
 import ProtectedRoute from "./components/ProtectedRoute";
 import GuestRoute from "./components/GuestRoute";
 
@@ -35,8 +33,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
       </Routes>
     </Router>
   );

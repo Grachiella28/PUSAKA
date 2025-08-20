@@ -15,16 +15,6 @@ const Navbar = React.forwardRef((props, ref) => {
                 </div>
                 <ul className="navbar-menu">
                     <li>
-                        <NavLink to="/about">
-                            About
-                        </NavLink>
-                    </li>
-                    <li>
-                        <NavLink to="/contact">
-                            Contact
-                        </NavLink>
-                    </li>
-                    <li>
                         <NavLink to="/login">Admin</NavLink>
                     </li>
                 </ul>

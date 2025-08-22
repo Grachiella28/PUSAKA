@@ -5,6 +5,7 @@ import { doc, getDoc } from "firebase/firestore";
 import HTMLFlipBook from "react-pageflip";
 import "../styles/Flipbook.css";
 import logo from "../assets/perpus.png";
+import { trackNaskahView } from "../utils/viewTracker";
 
 const Flipbook = () => {
   const { id } = useParams();
@@ -17,6 +18,7 @@ const Flipbook = () => {
   const [size, setSize] = useState({ width: 800, height: 600 });
   const [showControls, setShowControls] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const [viewTracked, setViewTracked] = useState(false);
   const flipBookRef = useRef();
   const controlsTimeoutRef = useRef();
 
@@ -39,6 +41,25 @@ const Flipbook = () => {
     };
     fetchNaskah();
   }, [id]);
+
+  // Track view setelah naskah berhasil dimuat dan flipbook siap
+  useEffect(() => {
+    const trackView = async () => {
+      if (naskah && totalPages > 0 && !viewTracked && id) {
+        console.log('Tracking view for naskah:', id);
+        const success = await trackNaskahView(id);
+        if (success) {
+          setViewTracked(true);
+          console.log('View successfully tracked');
+        }
+      }
+    };
+
+    // Delay sedikit untuk memastikan flipbook sudah ter-render
+    const timeoutId = setTimeout(trackView, 1000);
+    
+    return () => clearTimeout(timeoutId);
+  }, [naskah, totalPages, id, viewTracked]);
 
   // Responsif sizing
   useEffect(() => {
@@ -345,6 +366,23 @@ const Flipbook = () => {
       <div className={`help-text ${showControls ? 'visible' : 'hidden'}`}>
         <p>Gunakan ← → untuk navigasi | + - untuk zoom | Klik untuk kontrol</p>
       </div>
+      
+      {/* Debug info (hilangkan di production) */}
+      {process.env.NODE_ENV === 'development' && viewTracked && (
+        <div style={{
+          position: 'fixed',
+          bottom: '10px',
+          left: '10px',
+          background: 'rgba(0,0,0,0.8)',
+          color: 'white',
+          padding: '5px 10px',
+          borderRadius: '5px',
+          fontSize: '12px',
+          zIndex: 9999
+        }}>
+          View Tracked ✓
+        </div>
+      )}
     </div>
   );
 };

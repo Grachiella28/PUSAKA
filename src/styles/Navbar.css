@@ -87,13 +87,14 @@
 @media (max-width: 768px) {
   .navbar-container {
     padding: 0 20px;
-    flex-direction: column;
-    gap: 15px;
+    /* Tetap menggunakan flex-direction: row untuk menjaga posisi kiri-kanan */
+    justify-content: space-between;
+    align-items: center;
   }
 
   .navbar-menu {
-    flex-wrap: wrap;
-    justify-content: center;
+    /* Menu tetap di kanan, tidak wrap ke bawah */
+    flex-wrap: nowrap;
     gap: 20px;
   }
 
@@ -114,7 +115,9 @@
 @media (max-width: 480px) {
   .navbar-container {
     padding: 0 15px;
-    gap: 12px;
+    /* Tetap menjaga layout horizontal */
+    justify-content: space-between;
+    align-items: center;
   }
 
   .navbar-menu {
@@ -122,16 +125,32 @@
   }
 
   .logo-text {
-    font-size: 22px;
-    letter-spacing: 1px;
+    font-size: 20px; /* Diperkecil untuk memberi ruang lebih */
+    letter-spacing: 0.5px;
   }
   
   .logo-img {
-    width: 45px;
+    width: 40px; /* Diperkecil untuk memberi ruang lebih */
   }
   
   .navbar-menu li a {
     font-size: 14px;
+  }
+}
+
+/* Untuk layar yang sangat kecil, pastikan logo tidak terlalu panjang */
+@media (max-width: 360px) {
+  .logo-text {
+    font-size: 18px;
+    letter-spacing: 0.5px;
+  }
+  
+  .logo-img {
+    width: 35px;
+  }
+  
+  .navbar-menu li a {
+    font-size: 13px;
   }
 }
 

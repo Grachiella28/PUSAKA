@@ -1213,10 +1213,11 @@ html, body {
   font-family: inherit;
   background: white;
   transition: border-color 0.2s ease;
+  color: #341601;
 }
 
 .edit-select {
-  color: #666;
+  color: #341601;
 }
 
 .edit-input:focus, .edit-select:focus, .edit-textarea:focus {

@@ -4,6 +4,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import "../styles/Home.css";
+import { formatViews, getPopularNaskah} from "../utils/viewTracker";
 
 const Home = () => {
     const [naskahList, setNaskahList] = useState([]);
@@ -12,7 +13,7 @@ const Home = () => {
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedKategori, setSelectedKategori] = useState("all");
-    const [activeTab, setActiveTab] = useState("all"); // all, rekomendasi, kategori
+    const [activeTab, setActiveTab] = useState("all"); // all, kategori, populer
     const [menuOpen, setMenuOpen] = useState(false);
     const navigate = useNavigate();
 
@@ -54,17 +55,9 @@ const Home = () => {
     // Filter dan search functionality
     useEffect(() => {
         let result = naskahList;
-
-        // Filter berdasarkan tab aktif
-        if (activeTab === "rekomendasi") {
-            // Rekomendasi berdasarkan naskah terbaru (5 terbaru)
-            result = [...naskahList]
-                .sort((a, b) => {
-                    const dateA = a.uploadedAt?.seconds || 0;
-                    const dateB = b.uploadedAt?.seconds || 0;
-                    return dateB - dateA;
-                })
-                .slice(0, 6);
+        if (activeTab === "populer") {
+            // Naskah berdasarkan views terbanyak
+            result = getPopularNaskah(naskahList, 12);
         } else if (activeTab === "kategori" && selectedKategori !== "all") {
             result = naskahList.filter(item => 
                 item.kategori?.toLowerCase() === selectedKategori.toLowerCase()
@@ -109,11 +102,23 @@ const Home = () => {
 
     const getCurrentDisplayTitle = () => {
         if (activeTab === "all") return "📚 Semua Naskah";
-        if (activeTab === "rekomendasi") return "⭐ Naskah Rekomendasi";
+        if (activeTab === "populer") return "🔥 Naskah Populer";
         if (activeTab === "kategori") {
             const kategoriLabel = kategoris.find(k => k.value === selectedKategori)?.label || "Kategori";
             return `🗂️ ${kategoriLabel}`;
         }
+    };
+
+    // Get badge type for special tabs
+    const getBadgeType = (item, index) => {
+        if (activeTab === "populer" && index < 3) {
+            return {
+                show: true,
+                type: "popular",
+                content: index === 0 ? "👑" : index === 1 ? "🔥" : "⭐"
+            };
+        }
+        return { show: false };
     };
 
     // Close menu when clicking outside
@@ -174,10 +179,10 @@ const Home = () => {
                                             📚 Semua Naskah
                                         </button>
                                         <button
-                                            className={`dropdown-item ${activeTab === "rekomendasi" ? "active" : ""}`}
-                                            onClick={() => handleTabChange("rekomendasi")}
+                                            className={`dropdown-item ${activeTab === "populer" ? "active" : ""}`}
+                                            onClick={() => handleTabChange("populer")}
                                         >
-                                            ⭐ Rekomendasi
+                                            🔥 Populer
                                         </button>
                                     </div>
                                     
@@ -249,70 +254,76 @@ const Home = () => {
                                 </div>
                             ) : (
                                 <div className="naskah-grid">
-                                    {filteredNaskah.map((item, index) => (
-                                        <div key={item.id} className="naskah-card">
-                                            {/* Badge untuk rekomendasi */}
-                                            {activeTab === "rekomendasi" && index < 3 && (
-                                                <div className="recommendation-badge">
-                                                    {index === 0 && "🥇"}
-                                                    {index === 1 && "🥈"}
-                                                    {index === 2 && "🥉"}
-                                                </div>
-                                            )}
-                                            
-                                            {/* Thumbnail */}
-                                            <div className="card-thumbnail-wrapper">
-                                                {item.thumbnail ? (
-                                                    <img
-                                                        src={item.thumbnail}
-                                                        alt={item.judul}
-                                                        className="card-thumbnail"
-                                                        loading="lazy"
-                                                    />
-                                                ) : (
-                                                    <div className="thumbnail-placeholder">📄</div>
+                                    {filteredNaskah.map((item, index) => {
+                                        const badge = getBadgeType(item, index);
+                                        return (
+                                            <div key={item.id} className="naskah-card">
+                                                {/* Badge untuk special tabs */}
+                                                {badge.show && (
+                                                    <div className={`special-badge ${badge.type}-badge`}>
+                                                        {badge.content}
+                                                    </div>
                                                 )}
-                                            </div>
-                                            
-                                            {/* Content */}
-                                            <div className="card-content">
-                                                <div className="card-kategori">
-                                                    {item.kategori || "Lainnya"}
+                                                
+                                                {/* Thumbnail */}
+                                                <div className="card-thumbnail-wrapper">
+                                                    {item.thumbnail ? (
+                                                        <img
+                                                            src={item.thumbnail}
+                                                            alt={item.judul}
+                                                            className="card-thumbnail"
+                                                            loading="lazy"
+                                                        />
+                                                    ) : (
+                                                        <div className="thumbnail-placeholder">📄</div>
+                                                    )}
                                                 </div>
-                                                <h3 className="card-title">{item.judul}</h3>
-                                                <p className="card-description">
-                                                    {item.deskripsi 
-                                                        ? (item.deskripsi.length > 80 
-                                                            ? item.deskripsi.substring(0, 80) + "..." 
-                                                            : item.deskripsi)
-                                                        : "Tidak ada deskripsi"
-                                                    }
-                                                </p>
-                                                <div className="card-meta">
-                                                    <span className="card-pages">
-                                                        📄 {item.totalHalaman || 0} halaman
-                                                    </span>
-                                                    <span className="card-date">
-                                                        {item.uploadedAt 
-                                                            ? new Date(item.uploadedAt.seconds * 1000).toLocaleDateString("id-ID", {
-                                                                year: 'numeric',
-                                                                month: 'short'
-                                                            })
-                                                            : "Tidak diketahui"
+                                                
+                                                {/* Content */}
+                                                <div className="card-content">
+                                                    <div className="card-kategori">
+                                                        {item.kategori || "Lainnya"}
+                                                    </div>
+                                                    <h3 className="card-title">{item.judul}</h3>
+                                                    <p className="card-description">
+                                                        {item.deskripsi 
+                                                            ? (item.deskripsi.length > 80 
+                                                                ? item.deskripsi.substring(0, 80) + "..." 
+                                                                : item.deskripsi)
+                                                            : "Tidak ada deskripsi"
                                                         }
-                                                    </span>
+                                                    </p>
+                                                    <div className="card-meta">
+                                                        <div className="meta-left">
+                                                            <span className="card-pages">
+                                                                📄 {item.totalHalaman || 0} halaman
+                                                            </span>
+                                                            <span className="card-views">
+                                                                👁️ {formatViews(item.totalViews || 0)} views
+                                                            </span>
+                                                        </div>
+                                                        <span className="card-date">
+                                                            {item.uploadedAt 
+                                                                ? new Date(item.uploadedAt.seconds * 1000).toLocaleDateString("id-ID", {
+                                                                    year: 'numeric',
+                                                                    month: 'short'
+                                                                })
+                                                                : "Tidak diketahui"
+                                                            }
+                                                        </span>
+                                                    </div>
                                                 </div>
+                                                
+                                                {/* Action */}
+                                                <button
+                                                    className="read-button"
+                                                    onClick={() => handleOpenFlipbook(item.id)}
+                                                >
+                                                    Baca Sekarang
+                                                </button>
                                             </div>
-                                            
-                                            {/* Action */}
-                                            <button
-                                                className="read-button"
-                                                onClick={() => handleOpenFlipbook(item.id)}
-                                            >
-                                                Baca Sekarang
-                                            </button>
-                                        </div>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
                             )}
                         </>

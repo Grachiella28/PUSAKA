@@ -9,6 +9,9 @@ export default function Admin() {
   // State untuk menu aktif
   const [activeMenu, setActiveMenu] = useState("dashboard");
   
+  // State untuk mobile sidebar
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  
   // State untuk upload
   const [judul, setJudul] = useState("");
   const [deskripsi, setDeskripsi] = useState("");
@@ -47,6 +50,17 @@ export default function Admin() {
         message: ''
       });
     }, 3000);
+  };
+
+  // Function untuk toggle mobile sidebar
+  const toggleMobileSidebar = () => {
+    setIsMobileSidebarOpen(!isMobileSidebarOpen);
+  };
+
+  // Function untuk close mobile sidebar ketika menu dipilih
+  const handleMenuClick = (menu) => {
+    setActiveMenu(menu);
+    setIsMobileSidebarOpen(false);
   };
 
   // Fetch naskah list
@@ -335,7 +349,7 @@ export default function Admin() {
                     <p>Belum ada naskah yang diunggah.</p>
                     <button 
                       className="upload-redirect-btn"
-                      onClick={() => setActiveMenu("upload")}
+                      onClick={() => handleMenuClick("upload")}
                     >
                       Upload Naskah Pertama
                     </button>
@@ -509,26 +523,271 @@ export default function Admin() {
         );
       
       default:
+        // Calculate dashboard statistics
+        const today = new Date();
+        const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        
+        const uploadedToday = naskahList.filter(naskah => {
+          if (naskah.uploadedAt && naskah.uploadedAt.seconds) {
+            const uploadDate = new Date(naskah.uploadedAt.seconds * 1000);
+            return uploadDate >= todayStart;
+          }
+          return false;
+        }).length;
+
+        const thisMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+        const uploadedThisMonth = naskahList.filter(naskah => {
+          if (naskah.uploadedAt && naskah.uploadedAt.seconds) {
+            const uploadDate = new Date(naskah.uploadedAt.seconds * 1000);
+            return uploadDate >= thisMonth;
+          }
+          return false;
+        }).length;
+
+        // Calculate category statistics
+        const categoryStats = naskahList.reduce((acc, naskah) => {
+          const kategori = naskah.kategori || 'Lainnya';
+          acc[kategori] = (acc[kategori] || 0) + 1;
+          return acc;
+        }, {});
+
+        const totalPages = naskahList.reduce((total, naskah) => {
+          return total + (naskah.totalHalaman || 0);
+        }, 0);
+
+        // Get recent uploads (last 5)
+        const recentUploads = [...naskahList]
+          .sort((a, b) => {
+            const timeA = a.uploadedAt?.seconds || 0;
+            const timeB = b.uploadedAt?.seconds || 0;
+            return timeB - timeA;
+          })
+          .slice(0, 5);
+
+        // Get most popular categories
+        const popularCategories = Object.entries(categoryStats)
+          .sort(([,a], [,b]) => b - a)
+          .slice(0, 5);
+
         return (
           <div className="dashboard-section">
-            <h1>Selamat Datang, Admin!</h1>
-            <p>
-              Gunakan menu di samping untuk mengelola konten naskah Anda.
-              <br />
-              Mulai dengan memilih menu <strong>Upload Naskah</strong> atau <strong>List Naskah</strong> di sebelah kiri.
-            </p>
+            <div className="dashboard-header">
+              <h1>📊 Dashboard Admin</h1>
+              <p className="dashboard-subtitle">
+                Selamat datang kembali! Berikut adalah ringkasan aktivitas sistem Pusaka Anda.
+              </p>
+            </div>
+
+            {/* Main Stats Cards */}
             <div className="stats-cards">
-              <div className="stat-card">
-                <h3>Total Naskah</h3>
-                <p className="stat-number">{naskahList.length}</p>
+              <div className="stat-card primary">
+                <div className="stat-icon">📚</div>
+                <div className="stat-content">
+                  <h3>Total Naskah</h3>
+                  <p className="stat-number">{naskahList.length}</p>
+                  <span className="stat-label">Naskah Tersimpan</span>
+                </div>
               </div>
-              <div className="stat-card">
-                <h3>Upload Hari Ini</h3>
-                <p className="stat-number">-</p>
+              
+              <div className="stat-card success">
+                <div className="stat-icon">📤</div>
+                <div className="stat-content">
+                  <h3>Upload Hari Ini</h3>
+                  <p className="stat-number">{uploadedToday}</p>
+                  <span className="stat-label">Naskah Baru</span>
+                </div>
               </div>
-              <div className="stat-card">
-                <h3>Kategori</h3>
-                <p className="stat-number">8</p>
+              
+              <div className="stat-card info">
+                <div className="stat-icon">📅</div>
+                <div className="stat-content">
+                  <h3>Upload Bulan Ini</h3>
+                  <p className="stat-number">{uploadedThisMonth}</p>
+                  <span className="stat-label">Total Bulan Ini</span>
+                </div>
+              </div>
+              
+              <div className="stat-card warning">
+                <div className="stat-icon">📄</div>
+                <div className="stat-content">
+                  <h3>Total Halaman</h3>
+                  <p className="stat-number">{totalPages.toLocaleString()}</p>
+                  <span className="stat-label">Halaman Digitalisasi</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Dashboard Content Grid */}
+            <div className="dashboard-grid">
+              {/* Recent Uploads */}
+              <div className="dashboard-card">
+                <div className="card-header">
+                  <h3>🕒 Upload Terbaru</h3>
+                  <span className="card-badge">{recentUploads.length}</span>
+                </div>
+                <div className="card-content">
+                  {recentUploads.length > 0 ? (
+                    <div className="recent-list">
+                      {recentUploads.map((naskah, index) => (
+                        <div key={naskah.id} className="recent-item">
+                          <div className="recent-thumbnail">
+                            {naskah.thumbnail ? (
+                              <img src={naskah.thumbnail} alt={naskah.judul} />
+                            ) : (
+                              <div className="thumbnail-placeholder">📄</div>
+                            )}
+                          </div>
+                          <div className="recent-info">
+                            <h4>{naskah.judul}</h4>
+                            <p>
+                              <span className="category-tag">{naskah.kategori}</span>
+                              <span className="page-count">{naskah.totalHalaman || 0} hal</span>
+                            </p>
+                            <small>
+                              {naskah.uploadedAt ? 
+                                new Date(naskah.uploadedAt.seconds * 1000).toLocaleDateString("id-ID") : 
+                                "Tidak diketahui"
+                              }
+                            </small>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="empty-state">
+                      <p>Belum ada upload terbaru</p>
+                      <button 
+                        className="btn-primary-small"
+                        onClick={() => handleMenuClick("upload")}
+                      >
+                        Upload Naskah
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Category Statistics */}
+              <div className="dashboard-card">
+                <div className="card-header">
+                  <h3>📊 Statistik Kategori</h3>
+                  <span className="card-badge">{Object.keys(categoryStats).length}</span>
+                </div>
+                <div className="card-content">
+                  {popularCategories.length > 0 ? (
+                    <div className="category-stats">
+                      {popularCategories.map(([category, count], index) => (
+                        <div key={category} className="category-item">
+                          <div className="category-info">
+                            <span className="category-name">{category}</span>
+                            <span className="category-count">{count} naskah</span>
+                          </div>
+                          <div className="category-bar">
+                            <div 
+                              className="category-progress" 
+                              style={{ 
+                                width: `${(count / naskahList.length) * 100}%`,
+                                backgroundColor: `hsl(${index * 60}, 70%, 60%)`
+                              }}
+                            ></div>
+                          </div>
+                          <span className="category-percentage">
+                            {Math.round((count / naskahList.length) * 100)}%
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="empty-state">
+                      <p>Belum ada kategori</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Quick Actions */}
+              <div className="dashboard-card">
+                <div className="card-header">
+                  <h3>⚡ Aksi Cepat</h3>
+                </div>
+                <div className="card-content">
+                  <div className="quick-actions">
+                    <button 
+                      className="action-btn upload-btn-action"
+                      onClick={() => handleMenuClick("upload")}
+                    >
+                      <span className="action-icon">📤</span>
+                      <span className="action-text">Upload Naskah</span>
+                    </button>
+                    <button 
+                      className="action-btn list-btn-action"
+                      onClick={() => handleMenuClick("list")}
+                    >
+                      <span className="action-icon">📋</span>
+                      <span className="action-text">Kelola Naskah</span>
+                    </button>
+                    <button 
+                      className="action-btn website-btn-action"
+                      onClick={goToWebsite}
+                    >
+                      <span className="action-icon">🌐</span>
+                      <span className="action-text">Lihat Website</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* System Info */}
+              <div className="dashboard-card">
+                <div className="card-header">
+                  <h3>ℹ️ Informasi Sistem</h3>
+                </div>
+                <div className="card-content">
+                  <div className="system-info">
+                    <div className="info-item">
+                      <span className="info-label">Status Sistem:</span>
+                      <span className="info-value status-online">🟢 Online</span>
+                    </div>
+                    <div className="info-item">
+                      <span className="info-label">Kategori Tersedia:</span>
+                      <span className="info-value">8 Kategori</span>
+                    </div>
+                    <div className="info-item">
+                      <span className="info-label">Format Didukung:</span>
+                      <span className="info-value">PDF (Max 10MB)</span>
+                    </div>
+                    <div className="info-item">
+                      <span className="info-label">Last Update:</span>
+                      <span className="info-value">{new Date().toLocaleDateString("id-ID")}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Tips Section */}
+            <div className="dashboard-card tips-card">
+              <div className="card-header">
+                <h3>💡 Tips & Panduan</h3>
+              </div>
+              <div className="card-content">
+                <div className="tips-grid">
+                  <div className="tip-item">
+                    <div className="tip-icon">📝</div>
+                    <h4>Upload Berkualitas</h4>
+                    <p>Pastikan PDF memiliki resolusi yang baik dan satu halaman per file untuk hasil optimal.</p>
+                  </div>
+                  <div className="tip-item">
+                    <div className="tip-icon">🏷️</div>
+                    <h4>Kategorisasi</h4>
+                    <p>Pilih kategori yang tepat agar naskah mudah ditemukan oleh pengunjung website.</p>
+                  </div>
+                  <div className="tip-item">
+                    <div className="tip-icon">📄</div>
+                    <h4>Deskripsi Lengkap</h4>
+                    <p>Tambahkan deskripsi yang informatif untuk memberikan context naskah kepada pembaca.</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -538,6 +797,11 @@ export default function Admin() {
 
   return (
     <div className="admin-container">
+      {/* Mobile Sidebar Overlay */}
+      {isMobileSidebarOpen && (
+        <div className="mobile-sidebar-overlay" onClick={toggleMobileSidebar}></div>
+      )}
+
       {/* Notifikasi Tengah */}
       {notification.show && (
         <div className="notification-overlay">
@@ -548,24 +812,24 @@ export default function Admin() {
       )}
 
       {/* Sidebar */}
-      <aside className="admin-sidebar">
+      <aside className={`admin-sidebar ${isMobileSidebarOpen ? 'mobile-open' : ''}`}>
         <div className="sidebar-title">Admin Pusaka</div>
         <ul>
           <li 
             className={activeMenu === "dashboard" ? "active" : ""}
-            onClick={() => setActiveMenu("dashboard")}
+            onClick={() => handleMenuClick("dashboard")}
           >
             Dashboard
           </li>
           <li 
             className={activeMenu === "upload" ? "active" : ""}
-            onClick={() => setActiveMenu("upload")}
+            onClick={() => handleMenuClick("upload")}
           >
             Upload Naskah
           </li>
           <li 
             className={activeMenu === "list" ? "active" : ""}
-            onClick={() => setActiveMenu("list")}
+            onClick={() => handleMenuClick("list")}
           >
             List Naskah
           </li>
@@ -579,6 +843,17 @@ export default function Admin() {
       <div className="admin-main">
         {/* Header */}
         <header className="admin-header">
+          {/* Mobile Hamburger Menu */}
+          <button 
+            className="mobile-menu-btn"
+            onClick={toggleMobileSidebar}
+            aria-label="Toggle Menu"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+
           <span>Halo, Admin</span>
           <div className="header-actions">
             <img

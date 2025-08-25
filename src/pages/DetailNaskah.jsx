@@ -83,12 +83,6 @@ const DetailNaskah = () => {
             <Navbar />
             <div className="detail-container">
                 {/* Breadcrumb */}
-                <div className="breadcrumb">
-                    <button className="breadcrumb-link" onClick={handleKembali}>
-                        ← Kembali ke Beranda
-                    </button>
-                </div>
-
                 <div className="detail-content">
                     {/* Thumbnail Section */}
                     <div className="detail-thumbnail-section">

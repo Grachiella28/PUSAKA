@@ -76,7 +76,12 @@ const Home = () => {
         setFilteredNaskah(result);
     }, [naskahList, searchTerm, selectedKategori, activeTab]);
 
-    const handleOpenFlipbook = (id) => {
+    const handleCardClick = (id) => {
+        navigate(`/detail/${id}`);
+    };
+
+    const handleOpenFlipbook = (e, id) => {
+        e.stopPropagation(); // Prevent card click event
         navigate(`/baca/${id}`);
     };
 
@@ -257,7 +262,12 @@ const Home = () => {
                                     {filteredNaskah.map((item, index) => {
                                         const badge = getBadgeType(item, index);
                                         return (
-                                            <div key={item.id} className="naskah-card">
+                                            <div 
+                                                key={item.id} 
+                                                className="naskah-card"
+                                                onClick={() => handleCardClick(item.id)}
+                                                style={{ cursor: 'pointer' }}
+                                            >
                                                 {/* Badge untuk special tabs */}
                                                 {badge.show && (
                                                     <div className={`special-badge ${badge.type}-badge`}>
@@ -317,7 +327,7 @@ const Home = () => {
                                                 {/* Action */}
                                                 <button
                                                     className="read-button"
-                                                    onClick={() => handleOpenFlipbook(item.id)}
+                                                    onClick={(e) => handleOpenFlipbook(e, item.id)}
                                                 >
                                                     Baca Sekarang
                                                 </button>

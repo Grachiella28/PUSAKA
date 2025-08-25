@@ -305,7 +305,7 @@
   margin: 0 auto;
 }
 
-/* ===== NASKAH CARD ===== */
+/* ===== NASKAH CARD (UPDATED FOR CLICKABILITY) ===== */
 .naskah-card {
   background: white;
   border-radius: 15px;
@@ -317,12 +317,38 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  cursor: pointer;
+  user-select: none;
 }
 
 .naskah-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
   border-color: #d4af37;
+}
+
+/* Add subtle glow effect on hover for clickable cards */
+.naskah-card:hover::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #d4af37, #b8860b);
+  border-radius: 17px;
+  z-index: -1;
+  opacity: 0.6;
+  animation: glow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    opacity: 0.6;
+  }
+  to {
+    opacity: 0.8;
+  }
 }
 
 /* ===== SPECIAL BADGES (Updated) ===== */
@@ -397,6 +423,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  pointer-events: none; /* Prevent text selection when card is clickable */
 }
 
 .card-kategori {
@@ -475,7 +502,7 @@
   text-align: right;
 }
 
-/* ===== READ BUTTON ===== */
+/* ===== READ BUTTON (UPDATED) ===== */
 .read-button {
   background: linear-gradient(135deg, #341601, #4a1f01);
   color: white;
@@ -489,12 +516,21 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-top: auto;
+  position: relative;
+  z-index: 2;
+  pointer-events: auto; /* Enable clicking on button */
 }
 
 .read-button:hover {
   background: linear-gradient(135deg, #4a1f01, #5d2602);
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(52, 22, 1, 0.3);
+}
+
+/* Add visual feedback for button inside clickable card */
+.naskah-card:hover .read-button {
+  background: linear-gradient(135deg, #5d2602, #6d2f03);
+  box-shadow: 0 8px 25px rgba(52, 22, 1, 0.4);
 }
 
 /* ===== RESPONSIVE DESIGN ===== */
@@ -574,6 +610,12 @@
   
   .meta-left {
     gap: 2px;
+  }
+  
+  /* Reduce glow effect on mobile for performance */
+  .naskah-card:hover::before {
+    animation: none;
+    opacity: 0.4;
   }
 }
 
@@ -668,6 +710,11 @@
   .card-date {
     align-self: flex-end;
   }
+  
+  /* Disable glow effect on mobile */
+  .naskah-card:hover::before {
+    display: none;
+  }
 }
 
 /* ===== EXTRA SMALL SCREENS ===== */
@@ -753,4 +800,29 @@
 
 .filter-dropdown::-webkit-scrollbar-thumb:hover {
   background: #b8860b;
+}
+
+/* ===== ACCESSIBILITY ===== */
+@media (prefers-reduced-motion: reduce) {
+  .naskah-card,
+  .card-thumbnail,
+  .read-button {
+    transition: none;
+    animation: none;
+  }
+  
+  .naskah-card:hover::before {
+    animation: none;
+  }
+}
+
+/* ===== FOCUS STATES ===== */
+.naskah-card:focus {
+  outline: 2px solid #d4af37;
+  outline-offset: 2px;
+}
+
+.read-button:focus {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
 }

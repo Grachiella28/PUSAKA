@@ -82,7 +82,6 @@ const DetailNaskah = () => {
         <div>
             <Navbar />
             <div className="detail-container">
-                {/* Breadcrumb */}
                 <div className="detail-content">
                     {/* Thumbnail Section */}
                     <div className="detail-thumbnail-section">

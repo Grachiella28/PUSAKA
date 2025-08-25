@@ -8,31 +8,6 @@
     padding-bottom: 40px;
 }
 
-/* ===== BREADCRUMB ===== */
-.breadcrumb {
-    margin-bottom: 40px;
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.breadcrumb-link {
-    background: transparent;
-    border: none;
-    color: #666;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    padding: 8px 0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.breadcrumb-link:hover {
-    color: #341601;
-}
-
 /* ===== LOADING STATE ===== */
 .loading-detail {
     text-align: center;
@@ -397,7 +372,6 @@
     
     .detail-description p {
         font-size: 15px;
-        text-align: left;
     }
     
     .detail-additional {

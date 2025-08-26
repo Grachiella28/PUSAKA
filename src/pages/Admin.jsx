@@ -123,7 +123,7 @@ export default function Admin() {
       return;
     }
 
-    // Validasi ukuran file (10MB = 10 * 1024 * 1024 bytes)
+    // Validasi ukuran file (100MB = 100 * 1024 * 1024 bytes)
     const maxSize = 10 * 1024 * 1024; // 10MB
     if (file.size > maxSize) {
       showNotification('error', 'Ukuran file terlalu besar! Maksimal 10MB.');

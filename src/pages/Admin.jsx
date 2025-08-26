@@ -23,8 +23,19 @@ export default function Admin() {
   // State untuk list naskah
   const [naskahList, setNaskahList] = useState([]);
   const [loadingList, setLoadingList] = useState(false);
-  const [editingId, setEditingId] = useState(null);
-  const [editForm, setEditForm] = useState({});
+  
+  // State untuk edit modal - diubah dari inline editing
+  const [editModal, setEditModal] = useState({
+    show: false,
+    naskah: null,
+    form: {
+      judul: "",
+      deskripsi: "",
+      kategori: ""
+    },
+    loading: false
+  });
+  
   const [deleteConfirm, setDeleteConfirm] = useState(null);
 
   // State untuk notifikasi tengah
@@ -206,32 +217,70 @@ export default function Admin() {
     setLoading(false);
   };
 
-  // Handle edit naskah
+  // Handle edit naskah - Buka modal edit
   const handleEdit = (naskah) => {
-    setEditingId(naskah.id);
-    setEditForm({
-      judul: naskah.judul,
-      deskripsi: naskah.deskripsi,
-      kategori: naskah.kategori
+    setEditModal({
+      show: true,
+      naskah: naskah,
+      form: {
+        judul: naskah.judul,
+        deskripsi: naskah.deskripsi || "",
+        kategori: naskah.kategori
+      },
+      loading: false
     });
   };
 
-  // Handle update naskah
-  const handleUpdate = async (id) => {
+  // Handle close edit modal
+  const closeEditModal = () => {
+    setEditModal({
+      show: false,
+      naskah: null,
+      form: {
+        judul: "",
+        deskripsi: "",
+        kategori: ""
+      },
+      loading: false
+    });
+  };
+
+  // Handle form change di edit modal
+  const handleEditFormChange = (field, value) => {
+    setEditModal(prev => ({
+      ...prev,
+      form: {
+        ...prev.form,
+        [field]: value
+      }
+    }));
+  };
+
+  // Handle update naskah dari modal
+  const handleUpdateFromModal = async () => {
+    if (!editModal.form.judul.trim() || !editModal.form.kategori) {
+      showNotification('error', 'Judul dan kategori wajib diisi!');
+      return;
+    }
+
+    setEditModal(prev => ({ ...prev, loading: true }));
+
     try {
-      await updateDoc(doc(db, "naskah", id), {
-        judul: editForm.judul,
-        deskripsi: editForm.deskripsi,
-        kategori: editForm.kategori,
+      await updateDoc(doc(db, "naskah", editModal.naskah.id), {
+        judul: editModal.form.judul.trim(),
+        deskripsi: editModal.form.deskripsi.trim(),
+        kategori: editModal.form.kategori,
         updatedAt: new Date()
       });
-      setEditingId(null);
-      setEditForm({});
+      
+      closeEditModal();
       fetchNaskahList(); // Refresh list
       showNotification('success', '✅ Naskah berhasil diperbarui!');
     } catch (error) {
       console.error("Error updating naskah:", error);
       showNotification('error', '❌ Gagal memperbarui naskah!');
+    } finally {
+      setEditModal(prev => ({ ...prev, loading: false }));
     }
   };
 
@@ -381,56 +430,21 @@ export default function Admin() {
                               )}
                             </td>
                             <td>
-                              {editingId === naskah.id ? (
-                                <input
-                                  type="text"
-                                  value={editForm.judul}
-                                  onChange={(e) => setEditForm({...editForm, judul: e.target.value})}
-                                  className="edit-input"
-                                />
-                              ) : (
-                                <div className="naskah-title">{naskah.judul}</div>
-                              )}
+                              <div className="naskah-title">{naskah.judul}</div>
                             </td>
                             <td>
-                              {editingId === naskah.id ? (
-                                <select
-                                  value={editForm.kategori}
-                                  onChange={(e) => setEditForm({...editForm, kategori: e.target.value})}
-                                  className="edit-select"
-                                >
-                                  <option value="sejarah">Sejarah</option>
-                                  <option value="sastra">Sastra</option>
-                                  <option value="agama">Agama</option>
-                                  <option value="budaya">Budaya</option>
-                                  <option value="hukum">Hukum</option>
-                                  <option value="filsafat">Filsafat</option>
-                                  <option value="bahasa">Bahasa</option>
-                                  <option value="lainnya">Lainnya</option>
-                                </select>
-                              ) : (
-                                <span className="kategori-badge">{naskah.kategori}</span>
-                              )}
+                              <span className="kategori-badge">{naskah.kategori}</span>
                             </td>
                             <td>
-                              {editingId === naskah.id ? (
-                                <textarea
-                                  value={editForm.deskripsi}
-                                  onChange={(e) => setEditForm({...editForm, deskripsi: e.target.value})}
-                                  className="edit-textarea"
-                                  rows="2"
-                                />
-                              ) : (
-                                <div className="naskah-description">
-                                  {naskah.deskripsi ? 
-                                    (naskah.deskripsi.length > 50 ? 
-                                      naskah.deskripsi.substring(0, 50) + "..." : 
-                                      naskah.deskripsi
-                                    ) : 
-                                    "Tidak ada deskripsi"
-                                  }
-                                </div>
-                              )}
+                              <div className="naskah-description">
+                                {naskah.deskripsi ? 
+                                  (naskah.deskripsi.length > 50 ? 
+                                    naskah.deskripsi.substring(0, 50) + "..." : 
+                                    naskah.deskripsi
+                                  ) : 
+                                  "Tidak ada deskripsi"
+                                }
+                              </div>
                             </td>
                             <td className="text-center">{naskah.totalHalaman || 0}</td>
                             <td>
@@ -441,49 +455,27 @@ export default function Admin() {
                             </td>
                             <td>
                               <div className="action-buttons">
-                                {editingId === naskah.id ? (
-                                  <>
-                                    <button
-                                      className="save-btn"
-                                      onClick={() => handleUpdate(naskah.id)}
-                                    >
-                                      ✅ Simpan
-                                    </button>
-                                    <button
-                                      className="cancel-btn"
-                                      onClick={() => {
-                                        setEditingId(null);
-                                        setEditForm({});
-                                      }}
-                                    >
-                                      ❌ Batal
-                                    </button>
-                                  </>
-                                ) : (
-                                  <>
-                                    <button
-                                      className="view-btn"
-                                      onClick={() => window.location.href = `/baca/${naskah.id}`}
-                                      title="Lihat Naskah"
-                                    >
-                                      Lihat
-                                    </button>
-                                    <button
-                                      className="edit-btn"
-                                      onClick={() => handleEdit(naskah)}
-                                      title="Edit Naskah"
-                                    >
-                                      Edit
-                                    </button>
-                                    <button
-                                      className="delete-btn"
-                                      onClick={() => setDeleteConfirm(naskah.id)}
-                                      title="Hapus Naskah"
-                                    >
-                                      Hapus
-                                    </button>
-                                  </>
-                                )}
+                                <button
+                                  className="view-btn"
+                                  onClick={() => window.location.href = `/baca/${naskah.id}`}
+                                  title="Lihat Naskah"
+                                >
+                                  Lihat
+                                </button>
+                                <button
+                                  className="edit-btn"
+                                  onClick={() => handleEdit(naskah)}
+                                  title="Edit Naskah"
+                                >
+                                  Edit
+                                </button>
+                                <button
+                                  className="delete-btn"
+                                  onClick={() => setDeleteConfirm(naskah.id)}
+                                  title="Hapus Naskah"
+                                >
+                                  Hapus
+                                </button>
                               </div>
                             </td>
                           </tr>
@@ -807,6 +799,111 @@ export default function Admin() {
         <div className="notification-overlay">
           <div className={`notification-content ${notification.type}`}>
             <p>{notification.message}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Modal */}
+      {editModal.show && (
+        <div className="modal-overlay">
+          <div className="edit-modal-content">
+            <div className="edit-modal-header">
+              <h3>✏️ Edit Naskah</h3>
+              <button 
+                className="close-modal-btn"
+                onClick={closeEditModal}
+                disabled={editModal.loading}
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="edit-modal-body">
+              <div className="edit-form-group">
+                <label>Judul Naskah <span className="required">*</span></label>
+                <input
+                  type="text"
+                  value={editModal.form.judul}
+                  onChange={(e) => handleEditFormChange('judul', e.target.value)}
+                  placeholder="Masukkan judul naskah"
+                  className="edit-modal-input"
+                  disabled={editModal.loading}
+                />
+              </div>
+
+              <div className="edit-form-group">
+                <label>Kategori <span className="required">*</span></label>
+                <select
+                  value={editModal.form.kategori}
+                  onChange={(e) => handleEditFormChange('kategori', e.target.value)}
+                  className="edit-modal-select"
+                  disabled={editModal.loading}
+                >
+                  <option value="sejarah">Sejarah</option>
+                  <option value="sastra">Sastra</option>
+                  <option value="agama">Agama</option>
+                  <option value="budaya">Budaya</option>
+                  <option value="hukum">Hukum</option>
+                  <option value="filsafat">Filsafat</option>
+                  <option value="bahasa">Bahasa</option>
+                  <option value="lainnya">Lainnya</option>
+                </select>
+              </div>
+
+              <div className="edit-form-group">
+                <label>Deskripsi</label>
+                <textarea
+                  value={editModal.form.deskripsi}
+                  onChange={(e) => handleEditFormChange('deskripsi', e.target.value)}
+                  placeholder="Masukkan deskripsi naskah (opsional)"
+                  className="edit-modal-textarea"
+                  rows="6"
+                  disabled={editModal.loading}
+                />
+              </div>
+
+              {editModal.naskah && (
+                <div className="edit-form-info">
+                  <div className="info-row">
+                    <span className="info-label">Total Halaman:</span>
+                    <span className="info-value">{editModal.naskah.totalHalaman || 0} halaman</span>
+                  </div>
+                  <div className="info-row">
+                    <span className="info-label">Upload Date:</span>
+                    <span className="info-value">
+                      {editModal.naskah.uploadedAt ? 
+                        new Date(editModal.naskah.uploadedAt.seconds * 1000).toLocaleDateString("id-ID") : 
+                        "Tidak diketahui"
+                      }
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            <div className="edit-modal-footer">
+              <button
+                className="cancel-edit-btn"
+                onClick={closeEditModal}
+                disabled={editModal.loading}
+              >
+                Batal
+              </button>
+              <button
+                className="save-edit-btn"
+                onClick={handleUpdateFromModal}
+                disabled={editModal.loading || !editModal.form.judul.trim() || !editModal.form.kategori}
+              >
+                {editModal.loading ? (
+                  <>
+                    <span className="loading-spinner"></span>
+                    Menyimpan...
+                  </>
+                ) : (
+                  '💾 Simpan Perubahan'
+                )}
+              </button>
+            </div>
           </div>
         </div>
       )}

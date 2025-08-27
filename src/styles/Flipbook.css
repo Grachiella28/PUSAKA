@@ -318,7 +318,7 @@
 }
 
 .watermark-logo {
-  width: 120px; /* Sesuaikan ukuran logo */
+  width: 180px; /* Sesuaikan ukuran logo */
   height: auto;
   opacity: 0.1; /* Transparansi watermark */
   filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.5)); /* Shadow untuk visibilitas */

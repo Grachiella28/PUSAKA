@@ -123,7 +123,7 @@ export default function Admin() {
       return;
     }
 
-    // Validasi ukuran file (10MB = 10 * 1024 * 1024 bytes)
+    // Validasi ukuran file (100MB = 100 * 1024 * 1024 bytes)
     const maxSize = 10 * 1024 * 1024; // 10MB
     if (file.size > maxSize) {
       showNotification('error', 'Ukuran file terlalu besar! Maksimal 10MB.');
@@ -513,6 +513,69 @@ export default function Admin() {
             )}
           </div>
         );
+
+      case "manual":
+        return (
+          <div className="manual-section">
+            <div className="manual-header">
+              <h2>📖 Manual Book</h2>
+              <p className="manual-subtitle">
+                Panduan lengkap penggunaan sistem admin Pusaka
+              </p>
+            </div>
+
+            <div className="manual-content">
+              {/* Complete Manual Section */}
+              <div className="complete-manual-section">
+                <div className="complete-manual-card">
+                  <div className="complete-manual-header">
+                    <div className="complete-manual-icon">📚</div>
+                    <div className="complete-manual-info">
+                      <h3>Manual Book Lengkap</h3>
+                      <p>Panduan komprehensif untuk semua fitur sistem admin Pusaka</p>
+                    </div>
+                  </div>
+                  <div className="complete-manual-actions">
+                    <a 
+                      href="https://res.cloudinary.com/dn1oejv6r/image/upload/v1755242184/upovz7bzovy4p0tuqftu.pdf" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="manual-action-btn download"
+                    >
+                      <span className="btn-icon">👀</span>
+                      <span className="btn-text">Lihat Online</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              {/* FAQ Section */}
+              <div className="faq-section">
+                <h3>❓ FAQ (Frequently Asked Questions)</h3>
+                <div className="faq-list">
+                  <div className="faq-item">
+                    <h4>Bagaimana cara mengubah ukuran maksimal file upload?</h4>
+                    <p>Ukuran maksimal file saat ini adalah 10MB. Untuk mengubahnya, hubungi developer atau lihat manual troubleshooting.</p>
+                  </div>
+                  <div className="faq-item">
+                    <h4>Mengapa gambar naskah tidak muncul?</h4>
+                    <p>Pastikan koneksi internet stabil dan file PDF tidak corrupt. Lihat panduan troubleshooting untuk solusi lengkap.</p>
+                  </div>
+                  <div className="faq-item">
+                    <h4>Bagaimana cara backup data naskah?</h4>
+                    <p>Data naskah tersimpan di Cloudinary dan Firebase. Untuk backup manual, download manual book lengkap.</p>
+                  </div>
+                  <div className="faq-item">
+                    <h4>Apakah bisa upload file selain PDF?</h4>
+                    <p>Saat ini sistem hanya mendukung format PDF. Format lain akan ditambahkan di update mendatang.</p>
+                  </div>
+                </div>
+              </div>
+
+          
+            </div>
+          </div>
+        );
       
       default:
         // Calculate dashboard statistics
@@ -719,6 +782,13 @@ export default function Admin() {
                       <span className="action-text">Kelola Naskah</span>
                     </button>
                     <button 
+                      className="action-btn manual-btn-action"
+                      onClick={() => handleMenuClick("manual")}
+                    >
+                      <span className="action-icon">📖</span>
+                      <span className="action-text">Manual Book</span>
+                    </button>
+                    <button 
                       className="action-btn website-btn-action"
                       onClick={goToWebsite}
                     >
@@ -778,6 +848,11 @@ export default function Admin() {
                     <div className="tip-icon">📄</div>
                     <h4>Deskripsi Lengkap</h4>
                     <p>Tambahkan deskripsi yang informatif untuk memberikan context naskah kepada pembaca.</p>
+                  </div>
+                  <div className="tip-item">
+                    <div className="tip-icon">📖</div>
+                    <h4>Lihat Manual Book</h4>
+                    <p>Baca manual book untuk panduan lengkap penggunaan sistem admin.</p>
                   </div>
                 </div>
               </div>
@@ -929,6 +1004,12 @@ export default function Admin() {
             onClick={() => handleMenuClick("list")}
           >
             List Naskah
+          </li>
+          <li 
+            className={activeMenu === "manual" ? "active" : ""}
+            onClick={() => handleMenuClick("manual")}
+          >
+            Manual Book
           </li>
           <li onClick={handleLogout} style={{ cursor: "pointer", color: "red" }}>
             Logout

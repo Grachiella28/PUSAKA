@@ -537,12 +537,12 @@ export default function Admin() {
                   </div>
                   <div className="complete-manual-actions">
                     <a 
-                      href="https://res.cloudinary.com/dn1oejv6r/image/upload/v1755242184/upovz7bzovy4p0tuqftu.pdf" 
+                      href="https://res.cloudinary.com/dn1oejv6r/image/upload/v1756276335/Manual_Book_Admin_PUSAKA_-_PDF_Version_wrqwxc.pdf" 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="manual-action-btn download"
                     >
-                      <span className="btn-icon">👀</span>
+                      {/* <span className="btn-icon">👀</span> */}
                       <span className="btn-text">Lihat Online</span>
                     </a>
                   </div>
@@ -555,19 +555,19 @@ export default function Admin() {
                 <div className="faq-list">
                   <div className="faq-item">
                     <h4>Bagaimana cara mengubah ukuran maksimal file upload?</h4>
-                    <p>Ukuran maksimal file saat ini adalah 10MB. Untuk mengubahnya, hubungi developer atau lihat manual troubleshooting.</p>
+                    <p>Ukuran maksimal file saat ini adalah 10MB. Ini merupakan limit default yang ditetapkan dari cloud storage (cloudinary)</p>
                   </div>
                   <div className="faq-item">
                     <h4>Mengapa gambar naskah tidak muncul?</h4>
-                    <p>Pastikan koneksi internet stabil dan file PDF tidak corrupt. Lihat panduan troubleshooting untuk solusi lengkap.</p>
+                    <p>Pastikan koneksi internet stabil dan file PDF tidak corrupt. Kemungkinan hal ini disebabkan karena ukuran file yang besar.</p>
                   </div>
                   <div className="faq-item">
-                    <h4>Bagaimana cara backup data naskah?</h4>
-                    <p>Data naskah tersimpan di Cloudinary dan Firebase. Untuk backup manual, download manual book lengkap.</p>
+                    <h4>Apakah file PDF yang sudah diupload bisa diganti?</h4>
+                    <p>Tidak bisa, jika ingin mengubah file PDFnya silahkan hapus data lama dan upload ulang yang baru.</p>
                   </div>
                   <div className="faq-item">
                     <h4>Apakah bisa upload file selain PDF?</h4>
-                    <p>Saat ini sistem hanya mendukung format PDF. Format lain akan ditambahkan di update mendatang.</p>
+                    <p>Saat ini sistem hanya mendukung format PDF.</p>
                   </div>
                 </div>
               </div>

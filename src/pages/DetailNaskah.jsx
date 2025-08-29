@@ -43,7 +43,7 @@ const DetailNaskah = () => {
     };
 
     const handleKembali = () => {
-        navigate(-1); // Kembali ke halaman sebelumnya
+        navigate('/'); // Kembali ke halaman sebelumnya
     };
 
     if (loading) {

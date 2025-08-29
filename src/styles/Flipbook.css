@@ -379,20 +379,80 @@
 
 /* Mobile optimizations */
 @media (max-width: 768px) {
+  .flipbook-container {
+    /* Pastikan tidak ada scroll */
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+
   .flipbook-wrapper {
-    padding: 2px;
+    /* Berikan padding yang cukup dan pastikan center */
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  /* Pastikan flipbook tidak melebihi container */
+  .flipbook {
+    max-width: calc(100vw - 20px) !important;
+    max-height: calc(100vh - 120px) !important;
+    margin: 0 auto !important;
+  }
+
+  .flipbook-page {
+    /* Pastikan halaman tidak overflow */
+    width: 100% !important;
+    height: 100% !important;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .page-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #000;
+    position: relative;
   }
 
   .page-image {
-  object-fit: contain; /* Ubah dari cover ke contain agar tidak terpotong */
-}
-  
-  .controls-top {
-    padding: 0 15px;
+    /* Penting: gunakan contain dan pastikan gambar tidak terpotong */
+    object-fit: contain !important;
+    object-position: center center;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+  }
+
+  /* Watermark untuk mobile */
+  .watermark-logo {
+    width: 120px; /* Lebih kecil untuk mobile */
+    opacity: 0.08; /* Lebih transparan */
   }
   
-  .top-left-controls {
-    gap: 10px;
+  /* Kontrol untuk mobile */
+  .controls-top {
+    padding: 0 10px;
+    top: 10px;
+  }
+  
+  .controls-bottom {
+    bottom: 10px;
+    transform: translateX(-50%) scale(0.9);
   }
   
   .back-btn {
@@ -401,7 +461,7 @@
     font-size: 16px;
   }
   
-  .naskah-title {
+  .naskah-head-title {
     font-size: 14px;
     max-width: 150px;
     padding: 6px 12px;
@@ -410,10 +470,6 @@
   .page-indicator {
     font-size: 12px;
     padding: 6px 12px;
-  }
-  
-  .controls-bottom {
-    transform: translateX(-50%) scale(0.9);
   }
   
   .control-btn {
@@ -440,20 +496,9 @@
   }
   
   .help-text {
-    bottom: 100px;
+    bottom: 70px;
     font-size: 11px;
     padding: 6px 12px;
-  }
-  
-  .page-jump {
-    right: 10px;
-    top: 70px;
-  }
-  
-  .page-input {
-    width: 50px;
-    font-size: 12px;
-    padding: 6px;
   }
 
   /* Mobile specific - remove shadows for better performance */
@@ -463,6 +508,16 @@
   
   .stf__item {
     box-shadow: none !important;
+  }
+
+  /* Pastikan react-pageflip tidak menambah margin di mobile */
+  .stf__wrapper,
+  .stf__item,
+  .stf__block {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
   }
 }
 

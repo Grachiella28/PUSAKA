@@ -1,9 +1,22 @@
 /* ===== CONTAINER UTAMA ===== */
 .home-container {
+  position: relative;
   padding-top: 120px;
   min-height: 100vh;
-  background: linear-gradient(135deg, #FFF8E1 0%, #F5F5DC 100%);
+  background-color: #f5f4e7;
+  z-index: 1;
 }
+
+.home-container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url('/btik.png') repeat;
+  background-size: 230px;
+  opacity: 0.1; /* atur opacity di sini */
+  z-index: -1;
+}
+
 
 /* ===== SEARCH SECTION WITH FILTER MENU ===== */
 .search-section {

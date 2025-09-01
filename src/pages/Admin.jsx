@@ -537,7 +537,7 @@ export default function Admin() {
                   </div>
                   <div className="complete-manual-actions">
                     <a 
-                      href="https://res.cloudinary.com/dn1oejv6r/image/upload/v1756276335/Manual_Book_Admin_PUSAKA_-_PDF_Version_wrqwxc.pdf" 
+                      href="https://res.cloudinary.com/dn1oejv6r/image/upload/v1756694687/Manual_Book_Admin_PUSAKA_-_PDF_Version_xwkj8z.pdf" 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="manual-action-btn download"

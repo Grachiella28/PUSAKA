@@ -12,8 +12,8 @@
   position: absolute;
   inset: 0;
   background: url('/btik.png') repeat;
-  background-size: 230px;
-  opacity: 0.1; /* atur opacity di sini */
+  background-size: 170px;
+  opacity: 0.04; /* atur opacity di sini */
   z-index: -1;
 }
 

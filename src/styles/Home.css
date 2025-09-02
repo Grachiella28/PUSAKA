@@ -309,7 +309,7 @@
   box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
 }
 
-/* ===== NASKAH GRID ===== */
+/* ===== NASKAH GRID (ENHANCED FOR LARGE SCREENS) ===== */
 .naskah-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -546,7 +546,191 @@
   box-shadow: 0 8px 25px rgba(52, 22, 1, 0.4);
 }
 
-/* ===== RESPONSIVE DESIGN ===== */
+/* ===== RESPONSIVE DESIGN FOR LARGE SCREENS ===== */
+
+/* Large Desktop - 2K and above (2560x1440 and similar) */
+@media (min-width: 1920px) {
+  .home-container {
+    padding-top: 140px;
+  }
+  
+  .search-section {
+    padding: 0 60px 60px 60px;
+  }
+  
+  .search-container {
+    max-width: 900px;
+    gap: 20px;
+  }
+  
+  .search-input {
+    padding: 18px 25px;
+    font-size: 18px;
+    padding-right: 50px;
+  }
+  
+  .search-icon {
+    right: 25px;
+    font-size: 20px;
+  }
+  
+  .filter-menu-btn {
+    padding: 18px;
+    height: 62px;
+    min-width: 62px;
+  }
+  
+  .hamburger {
+    width: 24px;
+    gap: 4px;
+  }
+  
+  .hamburger span {
+    height: 2.5px;
+  }
+  
+  .content-section {
+    padding: 0 60px 80px 60px;
+  }
+  
+  /* Enhanced grid for large screens */
+  .naskah-grid {
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 40px;
+    max-width: 1600px;
+  }
+  
+  .section-title {
+    font-size: 36px;
+    margin-bottom: 60px;
+  }
+  
+  /* Enhanced card size and content */
+  .card-thumbnail-wrapper {
+    height: 240px;
+  }
+  
+  .card-content {
+    padding: 25px;
+  }
+  
+  .card-title {
+    font-size: 24px;
+    margin-bottom: 16px;
+  }
+  
+  .card-description {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  
+  .card-kategori {
+    padding: 6px 16px;
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+  
+  .card-meta {
+    font-size: 13px;
+    margin-bottom: 20px;
+    gap: 12px;
+  }
+  
+  .card-pages, .card-date, .card-views {
+    font-size: 13px;
+    gap: 6px;
+  }
+  
+  .read-button {
+    padding: 18px 25px;
+    font-size: 15px;
+  }
+  
+  /* Enhanced special badges */
+  .special-badge {
+    width: 50px;
+    height: 50px;
+    font-size: 28px;
+    top: 20px;
+    right: 20px;
+  }
+  
+  /* Enhanced dropdown for large screens */
+  .filter-dropdown {
+    min-width: 300px;
+    top: 75px;
+  }
+  
+  .dropdown-item {
+    padding: 15px 25px;
+    font-size: 15px;
+  }
+  
+  .dropdown-title {
+    padding: 0 25px;
+    font-size: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .dropdown-section {
+    padding: 25px 0;
+  }
+}
+
+/* Ultra Wide Screens - 4K and above */
+@media (min-width: 2560px) {
+  .search-section {
+    padding: 0 80px 80px 80px;
+  }
+  
+  .content-section {
+    padding: 0 80px 100px 80px;
+  }
+  
+  .search-container {
+    max-width: 1200px;
+  }
+  
+  /* Maximum width grid for ultra-wide screens */
+  .naskah-grid {
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 50px;
+    max-width: 2000px;
+  }
+  
+  .section-title {
+    font-size: 42px;
+    margin-bottom: 80px;
+  }
+  
+  /* Even more enhanced cards for ultra-wide */
+  .card-thumbnail-wrapper {
+    height: 280px;
+  }
+  
+  .card-content {
+    padding: 30px;
+  }
+  
+  .card-title {
+    font-size: 26px;
+    margin-bottom: 18px;
+  }
+  
+  .card-description {
+    font-size: 17px;
+    line-height: 1.7;
+    margin-bottom: 25px;
+  }
+  
+  .read-button {
+    padding: 20px 30px;
+    font-size: 16px;
+  }
+}
+
+/* Standard responsive breakpoints (existing code with improvements) */
 @media (max-width: 1024px) {
   .naskah-grid {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
